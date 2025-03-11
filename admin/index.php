@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include '../db.php'; 
@@ -66,14 +67,12 @@ $total_students = $stmt->get_result();
             text-align: center;
         }
 
-        tr:hover {
-            background: #f1f1f1;
-        }
+ 
 
         td img {
             width: 50px;
             height: 50px;
-            border-radius: 50%;
+            border-radius: 10px;
             object-fit: cover;
             border: 2px solid #141460;
         }
