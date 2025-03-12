@@ -106,3 +106,52 @@ body {
 .footer a:hover {
     text-decoration: underline;
 }
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: white;
+    border-radius: 8px;
+    color: #4a4a4a;
+}
+
+/* Style the gender dropdown to match input fields */
+.input-container select {
+    width: 100%;
+    padding: 12px;
+    border: 0.5px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    background: white;
+    border-radius: 8px;
+    color: #4a4a4a;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none; /* Remove default arrow */
+    cursor: pointer;
+}
+
+/* Add a custom dropdown arrow */
+.input-container {
+    position: relative;
+}
+
+.input-container::after {
+    content: "▼";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4a4a4a;
+    font-size: 16px;
+    pointer-events: none;
+}
+
+/* Hover & Focus Effects */
+.input-container select:hover,
+.input-container select:focus {
+    border-color: #1b6ca8;
+}
