@@ -1,18 +1,53 @@
 <?php
+session_start();
 include '../connection.php';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-    // Your authentication logic here
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = trim($_POST['username']);
+    $password = $_POST['password'];
 
     if (empty($username) || empty($password)) {
         $error = "Username and password are required.";
     } else {
-        // Process login
+        // Check if user is a student
+        $stmt = $conn->prepare("SELECT cin, name, email, password FROM students WHERE cin = ? OR email = ?");
+        $stmt->bind_param("ss", $username, $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $student = $result->fetch_assoc();
+            if (password_verify($password, $student['password'])) {
+                $_SESSION['student_cin'] = $student['cin'];
+                $_SESSION['student_name'] = $student['name'];
+                header("Location: ../student/dashboard.php");
+                exit();
+            }
+        }
+
+        // If not found in students, check the admin table
+        $stmt = $conn->prepare("SELECT cin, name, email, password, role FROM admin WHERE cin = ? OR email = ?");
+        $stmt->bind_param("ss", $username, $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 1) {
+            $admin = $result->fetch_assoc();
+            if (password_verify($password, $admin['password'])) {
+                $_SESSION['admin_cin'] = $admin['cin'];
+                $_SESSION['admin_name'] = $admin['name'];
+                $_SESSION['role'] = $admin['role'];
+                header("Location: ../admin/index.php");
+                exit();
+            }
+        }
+
+        // If no match, show error
+        $error = "Invalid username or password.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,9 +61,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-container">
         <div class="logo">
-            <img src="logo (2).png" alt="logo">
+            <img src="logo.png" alt="logo">
         </div>
-        <form method="post" action="">
+        <h2>Login</h2>
+        
+        <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
+
+        <form method="post" action="login.php">
             <div class="username">
                 <label for="username">Email / CIN</label>
                 <div class="input-container">
@@ -41,33 +80,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="password">Password</label>
                 <div class="input-container">
                     <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="password" name="password" placeholder="Password.." required>
-                    <span class="show-hide" onclick="togglePasswordVisibility()">Show</span>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
             </div>
 
-            <?php if (isset($error)) { echo "<p style='color: red;'>$error</p>"; } ?>
-
             <button type="submit" class="login">Login</button>
         </form>
+
         <div class="footer">
-            <span><a href="sign-in.php">Sign up</a></span>
+            <span><a href="../student/register.php">Sign up</a></span>
             <span>Forgot Password?</span>
         </div>
     </div>
-    <script type="text/javascript" src="login.js"></script>
-    <script>
-        function togglePasswordVisibility() {
-            const passwordField = document.getElementById('password');
-            const showHideButton = passwordField.nextElementSibling;
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                showHideButton.textContent = 'Hide';
-            } else {
-                passwordField.type = 'password';
-                showHideButton.textContent = 'Show';
-            }
-        }
-    </script>
+
+    <script type="text/javascript" src="js/login.js"></script>
 </body>
 </html>
