@@ -82,22 +82,13 @@ CREATE TABLE `rooms` (
   `dorm_id` int(11) NOT NULL,
   `floor` int(11) NOT NULL,
   `capacity` int(11) DEFAULT 4,
-  `occupied_slots` int(11) DEFAULT 0
+  `occupied_slots` int(11) DEFAULT 0,
+  `room_id` varchar(20) GENERATED ALWAYS AS (CONCAT(`room_number`, '-', `dorm_id`)) STORED
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `rooms`
 --
-
-INSERT INTO `rooms` (`room_number`, `dorm_id`, `floor`, `capacity`, `occupied_slots`) VALUES
-(101, 1, 1, 4, 0),
-(102, 1, 1, 4, 3),
-(103, 1, 1, 4, 4),
-(201, 1, 2, 4, 0),
-(301, 2, 3, 4, 2),
-(401, 2, 4, 4, 0),
-(501, 3, 5, 4, 1),
-(502, 3, 5, 4, 4);
 
 -- --------------------------------------------------------
 
@@ -117,7 +108,7 @@ CREATE TABLE `room_requests` (
 --
 
 INSERT INTO `room_requests` (`id`, `student_cin`, `status`, `request_date`) VALUES
-(1, 'L694082', 'pending', '2025-02-27 17:44:14');
+(1, 'A123456789', 'pending', '2025-02-27 17:44:14');
 
 -- --------------------------------------------------------
 
@@ -133,15 +124,15 @@ CREATE TABLE `students` (
   `phone` varchar(20) DEFAULT NULL,
   `photo` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `gender` enum('male','female') NOT NULL
+  `gender` enum('male','female') NOT NULL,
+  `room_id` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`cin`, `name`, `email`, `password`, `phone`, `photo`, `created_at`, `gender`) VALUES
-('L694082', 'HADAD Douaa', 'douaahadad10@gmail.com', '$2y$10$2iNeKD9nA2VJFGUw2IQ5aO24DMHxl3TyeRcHJLjcWsEDnIgmllQOm', '0699105629', NULL, '2025-02-27 17:43:54', 'male');
+
 
 --
 -- Indexes for dumped tables
@@ -243,6 +234,74 @@ ALTER TABLE `rooms`
 --
 ALTER TABLE `room_requests`
   ADD CONSTRAINT `room_requests_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `students`
+--
+ALTER TABLE `students`
+  ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE SET NULL;
+
+-- Add column room_id to students table
+ALTER TABLE `students`
+  ADD COLUMN `room_id` varchar(20) DEFAULT NULL AFTER `gender`;
+
+-- Add column room_id to rooms table
+ALTER TABLE `rooms`
+  ADD COLUMN `room_id` varchar(20) GENERATED ALWAYS AS (CONCAT(`room_number`, '-', `dorm_id`)) STORED;
+
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS update_occupied_slots_after_insert;
+DROP TRIGGER IF EXISTS update_occupied_slots_after_update;
+DROP TRIGGER IF EXISTS update_occupied_slots_after_delete;
+
+-- Trigger to update occupied_slots in rooms table when a student is assigned a room
+DELIMITER //
+CREATE TRIGGER update_occupied_slots_after_insert
+AFTER INSERT ON students
+FOR EACH ROW
+BEGIN
+  IF NEW.room_id IS NOT NULL THEN
+    UPDATE rooms
+    SET occupied_slots = occupied_slots + 1
+    WHERE room_id = NEW.room_id;
+  END IF;
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER update_occupied_slots_after_update
+AFTER UPDATE ON students
+FOR EACH ROW
+BEGIN
+  IF NEW.room_id IS NOT NULL AND NEW.room_id != OLD.room_id THEN
+    IF OLD.room_id IS NOT NULL THEN
+      UPDATE rooms
+      SET occupied_slots = GREATEST(occupied_slots - 1, 0)
+      WHERE room_id = OLD.room_id;
+    END IF;
+    UPDATE rooms
+    SET occupied_slots = occupied_slots + 1
+    WHERE room_id = NEW.room_id;
+  END IF;
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER update_occupied_slots_after_delete
+AFTER DELETE ON students
+FOR EACH ROW
+BEGIN
+  IF OLD.room_id IS NOT NULL THEN
+    UPDATE rooms
+    SET occupied_slots = GREATEST(occupied_slots - 1, 0)
+    WHERE room_id = OLD.room_id;
+  END IF;
+END;
+//
+DELIMITER ;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

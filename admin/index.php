@@ -1,27 +1,27 @@
-
 <?php
 session_start();
 include '../db.php'; 
-
+/*
 if (!isset($_SESSION['username'])) {
     header("Location: ../login.php");
     exit();
 }
-
+*/
 // Fetch search query if available
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : "";
 
 // Prepare SQL query for student search
-$total_students_query = "SELECT * FROM students" . ($search_query ? " WHERE cin LIKE ? OR name LIKE ?" : "");
-$stmt = $conn->prepare($total_students_query);
-
 if ($search_query) {
+    $total_students_query = "SELECT * FROM students WHERE cin LIKE ? OR name LIKE ?";
+    $stmt = $conn->prepare($total_students_query);
     $search_term = "%$search_query%";
     $stmt->bind_param("ss", $search_term, $search_term);
+    $stmt->execute();
+    $total_students = $stmt->get_result();
+} else {
+    $total_students_query = "SELECT * FROM students";
+    $total_students = $conn->query($total_students_query);
 }
-
-$stmt->execute();
-$total_students = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +36,7 @@ $total_students = $stmt->get_result();
         .students-table {
             width: 90%;
             max-width: 800px;
-            margin-top: 20px;
+            margin: 20px auto;
             background: white;
             padding: 20px;
             border-radius: 10px;
@@ -48,6 +48,34 @@ $total_students = $stmt->get_result();
             text-align: center;
             margin-bottom: 20px;
             color: #141460;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #141460;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .search-bar button:hover {
+            background-color: #0f0f5c;
         }
 
         table {
@@ -67,8 +95,6 @@ $total_students = $stmt->get_result();
             text-align: center;
         }
 
- 
-
         td img {
             width: 50px;
             height: 50px;
@@ -79,23 +105,18 @@ $total_students = $stmt->get_result();
     </style>
 </head>
 <body>
-    <header class="header">
-        <h1>Gestion d'internat</h1>
-    </header>
+    <?php include 'header.php'; ?>
     <?php include 'sidebar.php'; ?>
     
     <div class="main-content">
-        <!-- Student Search & List Section -->
         <div class="students-table">
             <h2>Students List</h2>
 
             <!-- Search Bar -->
-            <form method="GET" action="" class="mb-3">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="search" placeholder="Search by CIN or Name" 
-                           value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                    <button type="submit" class="search-btn">Search</button>
-                </div>
+            <form method="GET" action="" class="search-bar">
+                <input type="text" name="search" placeholder="Search by CIN or Name" 
+                       value="<?php echo htmlspecialchars($search_query); ?>">
+                <button type="submit"><i class="fa fa-search"></i></button>
             </form>
 
             <table border="1">
@@ -117,7 +138,10 @@ $total_students = $stmt->get_result();
                         <td><?php echo htmlspecialchars($student['email']); ?></td>
                         <td><?php echo htmlspecialchars($student['phone']); ?></td>
                         <td><?php echo htmlspecialchars($student['gender']); ?></td>
-                        <td><img src="<?php echo htmlspecialchars($student['photo']); ?>" alt="Student Photo" width="50"></td>
+                        <td>
+                            <img src="<?php echo htmlspecialchars($student['photo']); ?>" 
+                                 alt="Student Photo">
+                        </td>
                     </tr>
                     <?php endwhile; ?>
                 </tbody>

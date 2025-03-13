@@ -2,12 +2,12 @@
 session_start();
 include '../db.php'; 
 include 'sidebar.php';
-
+/*
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-
+*/
 // Fetch room and student information with GROUP_CONCAT to avoid duplicate rows
 $rooms_query = "SELECT rooms.room_number, rooms.floor, rooms.capacity, rooms.occupied_slots, rooms.dorm_id, 
                        dorms.name AS dorm_name,  -- Fetch the dorm name
@@ -142,9 +142,7 @@ if (!$rooms_result) {
     </style>
 </head>
 <body>
-    <header class="header">
-        <h1>Listes des Chambres</h1>
-    </header>
+<?php include 'header.php'; ?>
 
     <div class="main-content">
         <div class="rooms-table">
