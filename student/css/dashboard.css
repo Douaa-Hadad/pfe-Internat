@@ -1,0 +1,134 @@
+/* ================================
+   General Styling
+================================ */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+/* ================================
+   Headings
+================================ */
+h2, h3 {
+    color: #1b6ca8;
+    border-bottom: 2px solid #1b6ca8;
+    padding-bottom: 5px;
+}
+
+h2 {
+    font-size: 28px;
+}
+
+h3 {
+    font-size: 22px;
+}
+
+/* ================================
+   List Styling (Meal Reservations)
+================================ */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px;
+    background-color: #e7e7e7;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    color: #555;
+    font-size: 16px;
+}
+
+/* ================================
+   Action Buttons
+================================ */
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px 20px;
+    background-color: #1b6ca8;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #155a8a;
+}
+
+.btn-danger {
+    background-color: #d9534f;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+}
+
+/* ================================
+   No Data Message
+================================ */
+.no-data {
+    color: #999;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* ================================
+   Room Info Section
+================================ */
+.room-info {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #1b6ca8;
+    border-radius: 5px;
+}
+
+.room-info p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+/* ================================
+   Mobile Responsiveness
+================================ */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    .btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

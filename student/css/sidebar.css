@@ -1,0 +1,151 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-y: auto;
+    background: #f0f2f5;
+}
+
+
+.sidebar.open {
+    width: 200px;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 17px 0;
+    color: #1e1e6d;
+    cursor: pointer;
+    font-size: 15px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.sidebar a:hover {
+    color: #1e6db0;
+}
+
+.sidebar a i {
+    font-size: 20px;
+    margin-right: 16px;
+    transition: margin-right 0.3s;
+}
+
+.sidebar:not(.open) a span {
+    display: none;
+}
+
+.sidebar:not(.open) a {
+    justify-content: center;
+}
+
+.toggle-btn {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    background: #14146050;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 5px;
+    transition: background 0.3s;
+    z-index: 1001;
+}
+
+.toggle-btn:hover {
+    background: #1e1e6d;
+}
+
+.sidebar:not(.open) .username {
+    display: none;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 0.3s;
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    justify-content: center;
+}
+
+.logout-button:hover {
+    color: #1e6db0;
+}
+
+.logout-button i {
+    font-size: 20px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar:not(.open) .logout-button span {
+    display: none; 
+}
+
+.sidebar:not(.open) .logout-button {
+    justify-content: center;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background: #ced8e7;
+    padding-top: 80px;/* Add padding to account for the sidebar */
+}
+
+.form-group {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-control:focus {
+    border-color: #1950a4cb;
+    outline: none;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    margin-left: 10px;
+    background: #1950a4cb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background: #1e6db0;
+}
