@@ -1,0 +1,100 @@
+POST Data: Array
+(
+    [name] => ali houdidi
+    [gender] => male
+    [phone] => 063481912
+    [email] => hfaaa@gmail.com
+    [major] => ddjj
+    [year_of_study] => 2nd
+    [room_id] => 203-3
+)
+
+FILES Data: Array
+(
+    [profile_picture] => Array
+        (
+            [name] => nigaman.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpBA5C.tmp
+            [error] => 0
+            [size] => 5314
+        )
+
+    [payment_receipt] => Array
+        (
+            [name] => Td.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpBA5D.tmp
+            [error] => 0
+            [size] => 3004364
+        )
+
+)
+
+POST Data: Array
+(
+    [name] => dedsds ew
+    [gender] => dwed
+    [phone] => 13423567432
+    [email] => sdfghjedc@gmail.com
+    [major] => dsdsss
+    [year_of_study] => 2nd
+    [room_id] => 203-3
+)
+
+FILES Data: Array
+(
+    [profile_picture] => Array
+        (
+            [name] => nigaman.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php8FA6.tmp
+            [error] => 0
+            [size] => 5314
+        )
+
+    [payment_receipt] => Array
+        (
+            [name] => Td.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php8FA7.tmp
+            [error] => 0
+            [size] => 3004364
+        )
+
+)
+
+POST Data: Array
+(
+    [cin] => A233455
+    [name] => ff
+    [gender] => ff
+    [phone] => 3049669932
+    [email] => ffdksdans@ccc.ccok
+    [major] => er
+    [year_of_study] => fdfdfd
+    [room_id] => 204-3
+)
+
+FILES Data: Array
+(
+    [profile_picture] => Array
+        (
+            [name] => failed nerd.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php7CC9.tmp
+            [error] => 0
+            [size] => 22071
+        )
+
+    [payment_receipt] => Array
+        (
+            [name] => Td.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php7CD9.tmp
+            [error] => 0
+            [size] => 3004364
+        )
+
+)
+

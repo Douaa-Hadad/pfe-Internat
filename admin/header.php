@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
         justify-content: space-between;
         background-color: #141460;
         color: white;
-        padding: 15px 20px;
+        padding: 19px 20px; /* Increased padding to make the header 8px taller */
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         position: fixed; /* Makes the header fixed */
         top: 0; /* Pins it to the top */
@@ -56,7 +56,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
     /* Optional: Add padding to the body to prevent content from being hidden behind the fixed header */
     body {
-        padding-top: 70px; /* Adjust this value based on the header's height */
+        padding-top: 78px; /* Adjusted to match the new header height */
     }
 </style>
 

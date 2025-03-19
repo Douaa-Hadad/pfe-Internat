@@ -18,8 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows === 1) {
             $student = $result->fetch_assoc();
             if (password_verify($password, $student['password'])) {
-                $_SESSION['student_cin'] = $student['cin'];
-                $_SESSION['student_name'] = $student['name'];
+                // Store student information in session
+                $_SESSION['user_type'] = 'student';
+                $_SESSION['user_cin'] = $student['cin'];
+                $_SESSION['user_name'] = $student['name'];
+                $_SESSION['user_email'] = $student['email'];
                 header("Location: ../student/dashboard.php");
                 exit();
             }
@@ -34,9 +37,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows === 1) {
             $admin = $result->fetch_assoc();
             if (password_verify($password, $admin['password'])) {
-                $_SESSION['admin_cin'] = $admin['cin'];
-                $_SESSION['admin_name'] = $admin['name'];
-                $_SESSION['role'] = $admin['role'];
+                // Store admin information in session
+                $_SESSION['user_type'] = 'admin';
+                $_SESSION['user_cin'] = $admin['cin'];
+                $_SESSION['user_name'] = $admin['name'];
+                $_SESSION['user_email'] = $admin['email'];
+                $_SESSION['user_role'] = $admin['role'];
                 header("Location: ../admin/index.php");
                 exit();
             }
