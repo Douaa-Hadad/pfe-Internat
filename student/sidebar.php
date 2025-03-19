@@ -1,13 +1,18 @@
 <?php
-session_start();
+/*session_start();
 if (!isset($_SESSION['student_cin'])) {
     header("Location: ../login.php");
     exit();
 }
 
 $student_name = $_SESSION['student_name'];
-?>
+*/?>
 
+<head>
+    <meta charset="UTF-8">
+    <title>StudentDashboard</title>
+    <link rel="stylesheet" href="css/sidebar.css">
+</head>
 <div class="sidebar" id="sidebar">
     <a href="profile.php" class="profile-link">
         <div class="profile">
@@ -27,4 +32,5 @@ $student_name = $_SESSION['student_name'];
     </nav>
     <a href="../logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
 </div>
+<script src="js/sidebar.js"></script>
 <button class="toggle-btn" onclick="toggleSidebar()">☰</button>

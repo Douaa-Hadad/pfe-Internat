@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
 
         <div class="footer">
-            <span><a href="../student/register.php">Sign up</a></span>
+            <span><a href="register.php">Sign up</a></span>
             <span>Forgot Password?</span>
         </div>
     </div>
