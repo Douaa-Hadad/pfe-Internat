@@ -3,7 +3,7 @@ session_start();
 include '../connection.php';
 
 if (!isset($_SESSION['student_cin'])) {
-    header("Location: ../auth/login.php");
+    header("Location: ../login/login.php");
     exit();
 }
 
