@@ -2,11 +2,11 @@
 session_start();
 $mysqli = new mysqli("localhost", "root", "", "estcasa");
 
-// Redirect to login page if no session exists
+/* Redirect to login page if no session exists
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
-}
+}*/
 
 $students = $mysqli->query("SELECT * FROM students");
 ?>

@@ -2,12 +2,12 @@
 session_start();
 include '../db.php';
 
-// Redirect to login page if no session exists
+/* Redirect to login page if no session exists
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }
-
+*/
 include 'sidebar.php';
 
 // Fetch room and student information with GROUP_CONCAT to avoid duplicate rows

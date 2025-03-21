@@ -2,13 +2,13 @@
 session_start();
 $conn = new mysqli("localhost", "root", "", "estcasa");
 
-// Redirect to login page if no session exists
+/* Redirect to login page if no session exists
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }
 
-// Database connection
+*/
 $conn = new mysqli("localhost", "root", "", "estcasa");
 
 // Check connection
