@@ -125,20 +125,11 @@ CREATE TABLE `students` (
   `photo` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `gender` enum('male','female') NOT NULL,
-  `room_id` varchar(20) DEFAULT NULL
+  `room_id` varchar(20) DEFAULT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `students`
---
 
-
-
---
--- Indexes for dumped tables
---
-
---
 -- Indexes for table `dorms`
 --
 ALTER TABLE `dorms`
@@ -241,66 +232,28 @@ ALTER TABLE `room_requests`
 ALTER TABLE `students`
   ADD CONSTRAINT `students_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE SET NULL;
 
--- Add column room_id to students table
-ALTER TABLE `students`
-  ADD COLUMN `room_id` varchar(20) DEFAULT NULL AFTER `gender`;
-
--- Add column room_id to rooms table
-ALTER TABLE `rooms`
-  ADD COLUMN `room_id` varchar(20) GENERATED ALWAYS AS (CONCAT(`room_number`, '-', `dorm_id`)) STORED;
-
--- Drop existing triggers if they exist
-DROP TRIGGER IF EXISTS update_occupied_slots_after_insert;
-DROP TRIGGER IF EXISTS update_occupied_slots_after_update;
-DROP TRIGGER IF EXISTS update_occupied_slots_after_delete;
-
--- Trigger to update occupied_slots in rooms table when a student is assigned a room
+-- Trigger to increment occupied_slots when a student is assigned to a room
 DELIMITER //
-CREATE TRIGGER update_occupied_slots_after_insert
-AFTER INSERT ON students
-FOR EACH ROW
-BEGIN
-  IF NEW.room_id IS NOT NULL THEN
-    UPDATE rooms
-    SET occupied_slots = occupied_slots + 1
-    WHERE room_id = NEW.room_id;
-  END IF;
-END;
-//
-DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER update_occupied_slots_after_update
+CREATE TRIGGER increment_occupied_slots
 AFTER UPDATE ON students
 FOR EACH ROW
 BEGIN
-  IF NEW.room_id IS NOT NULL AND NEW.room_id != OLD.room_id THEN
-    IF OLD.room_id IS NOT NULL THEN
-      UPDATE rooms
-      SET occupied_slots = GREATEST(occupied_slots - 1, 0)
-      WHERE room_id = OLD.room_id;
-    END IF;
-    UPDATE rooms
-    SET occupied_slots = occupied_slots + 1
-    WHERE room_id = NEW.room_id;
+  IF NEW.room_id IS NOT NULL AND OLD.room_id IS NULL THEN
+    UPDATE rooms SET occupied_slots = occupied_slots + 1 WHERE room_id = NEW.room_id;
   END IF;
 END;
 //
 DELIMITER ;
 
-DELIMITER //
-CREATE TRIGGER update_occupied_slots_after_delete
-AFTER DELETE ON students
-FOR EACH ROW
-BEGIN
-  IF OLD.room_id IS NOT NULL THEN
-    UPDATE rooms
-    SET occupied_slots = GREATEST(occupied_slots - 1, 0)
-    WHERE room_id = OLD.room_id;
-  END IF;
-END;
-//
-DELIMITER ;
+-- Update occupied_slots based on existing data
+UPDATE rooms r
+JOIN (
+  SELECT room_id, COUNT(*) AS occupied_count
+  FROM students
+  WHERE room_id IS NOT NULL
+  GROUP BY room_id
+) s ON r.room_id = s.room_id
+SET r.occupied_slots = s.occupied_count;
 
 COMMIT;
 

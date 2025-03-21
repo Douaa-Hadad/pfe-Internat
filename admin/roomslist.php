@@ -1,19 +1,21 @@
 <?php
 session_start();
-include '../db.php'; 
-include 'sidebar.php';
-/*
-if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+include '../db.php';
+
+/* Redirect to login page if no session exists
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
+    header("Location: ../login/login.php");
     exit();
 }
 */
+include 'sidebar.php';
+
 // Fetch room and student information with GROUP_CONCAT to avoid duplicate rows
 $rooms_query = "SELECT rooms.room_number, rooms.floor, rooms.capacity, rooms.occupied_slots, rooms.dorm_id, 
                        dorms.name AS dorm_name,  -- Fetch the dorm name
                        COALESCE(GROUP_CONCAT(students.name SEPARATOR ', '), 'No Students') AS student_names
                 FROM rooms 
-                LEFT JOIN students ON rooms.room_number = students.room_number
+                LEFT JOIN students ON rooms.room_id = students.room_id  -- Corrected column name
                 LEFT JOIN dorms ON rooms.dorm_id = dorms.id  -- Join to get the dorm name
                 GROUP BY rooms.room_number, rooms.floor, rooms.capacity, rooms.occupied_slots, rooms.dorm_id, dorms.name
                 ORDER BY rooms.dorm_id, rooms.room_number";
@@ -29,21 +31,14 @@ if (!$rooms_result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listes des Chambres</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .main-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
 
         .rooms-table {
             width: 100%;
             max-width: 1100px;
-            margin-top: 20px;
+            margin-top: 100px; /* Default margin for when opened */
             background: white;
             padding: 40px;
             padding-right: 20px;
@@ -53,6 +48,11 @@ if (!$rooms_result) {
             display: flex;
             flex-wrap: nowrap;
             justify-content: center;
+            transition: margin-top 0.3s ease; /* Smooth transition for margin changes */
+        }
+
+        .rooms-table.opened {
+            margin-top: 300px; /* Add more space when opened */
         }
 
         .dorm-section {
@@ -66,7 +66,7 @@ if (!$rooms_result) {
         }
 
         .room-card {
-            display: inline-block;
+            display: none; /* Initially hide all room cards */
             width: 30%;
             height: 50px;
             margin: 1%;
@@ -139,6 +139,25 @@ if (!$rooms_result) {
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+
+        .floor-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .floor-buttons button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #141460;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .floor-buttons button:hover {
+            background-color: rgb(154, 154, 205);
+        }
     </style>
 </head>
 <body>
@@ -156,8 +175,15 @@ if (!$rooms_result) {
                     $current_dorm = $row['dorm_id']; ?>
                     <div class="dorm-section">
                     <h3><?php echo htmlspecialchars($row['dorm_name']); ?></h3> <!-- Display dorm name here -->
+                    <div class="floor-buttons">
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', 'all')">All Floors</button>
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '1')">Floor 1</button>
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '2')">Floor 2</button>
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '3')">Floor 3</button>
+                        <!-- Add more buttons for additional floors as needed -->
+                    </div>
                 <?php endif; ?>
-                <div class="room-card">
+                <div class="room-card" data-dorm="<?php echo htmlspecialchars($row['dorm_id']); ?>" data-floor="<?php echo htmlspecialchars($row['floor']); ?>">
                     <button onclick="showRoomInfo('<?php echo htmlspecialchars($row['room_number']); ?>', '<?php echo htmlspecialchars($row['floor']); ?>', '<?php echo htmlspecialchars($row['capacity']); ?>', '<?php echo htmlspecialchars($row['occupied_slots']); ?>', '<?php echo htmlspecialchars($row['student_names']); ?>')">
                         <h3>Room <?php echo htmlspecialchars($row['room_number']); ?></h3>
                     </button>
@@ -178,6 +204,30 @@ if (!$rooms_result) {
     </div>
 
     <script>
+        function toggleRooms(dormId, floor) {
+            var roomCards = document.querySelectorAll('.room-card[data-dorm="' + dormId + '"]');
+            var roomsTable = document.querySelector('.rooms-table');
+            var isAnyVisible = false;
+
+            for (var i = 0; i < roomCards.length; i++) {
+                var roomCard = roomCards[i];
+                var roomFloor = roomCard.getAttribute('data-floor');
+                if (floor === 'all' || roomFloor === floor) {
+                    roomCard.style.display = roomCard.style.display === 'none' ? 'inline-block' : 'none';
+                    if (roomCard.style.display === 'inline-block') isAnyVisible = true;
+                } else {
+                    roomCard.style.display = 'none';
+                }
+            }
+
+            // Adjust margin based on visibility
+            if (isAnyVisible) {
+                roomsTable.classList.add('opened');
+            } else {
+                roomsTable.classList.remove('opened');
+            }
+        }
+
         function showRoomInfo(roomNumber, floor, capacity, occupiedSlots, studentNames) {
             document.getElementById('room-number').innerText = 'Room Number: ' + roomNumber;
             document.getElementById('room-floor').innerText = 'Floor: ' + floor;
