@@ -3,13 +3,13 @@ session_start();
 include '../connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
+    $username = trim($_POST['username']); // Can be CIN or Email
     $password = $_POST['password'];
 
     if (empty($username) || empty($password)) {
         $error = "Username and password are required.";
     } else {
-        // Check if user is a student
+        // ✅ Check if user is a student
         $stmt = $conn->prepare("SELECT cin, name, email, password FROM students WHERE cin = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
@@ -17,18 +17,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows === 1) {
             $student = $result->fetch_assoc();
+            
             if (password_verify($password, $student['password'])) {
-                // Store student information in session
+                // ✅ Store student session
                 $_SESSION['user_type'] = 'student';
-                $_SESSION['user_cin'] = $student['cin'];
-                $_SESSION['user_name'] = $student['name'];
-                $_SESSION['user_email'] = $student['email'];
+                $_SESSION['student_cin'] = $student['cin'];
+                $_SESSION['student_name'] = $student['name'];
+                $_SESSION['student_email'] = $student['email'];
+
+                // ✅ Ensure redirection happens
                 header("Location: ../student/dashboard.php");
                 exit();
             }
         }
 
-        // If not found in students, check the admin table
+        // ✅ If not found in students, check the admin table
         $stmt = $conn->prepare("SELECT cin, name, email, password, role FROM admin WHERE cin = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
@@ -36,23 +39,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows === 1) {
             $admin = $result->fetch_assoc();
+            
             if (password_verify($password, $admin['password'])) {
-                // Store admin information in session
+                // ✅ Store admin session
                 $_SESSION['user_type'] = 'admin';
                 $_SESSION['user_cin'] = $admin['cin'];
                 $_SESSION['user_name'] = $admin['name'];
                 $_SESSION['user_email'] = $admin['email'];
                 $_SESSION['user_role'] = $admin['role'];
+
+                // ✅ Redirect to admin dashboard
                 header("Location: ../admin/index.php");
                 exit();
             }
         }
 
-        // If no match, show error
+        // ✅ If no match, show error
         $error = "Invalid username or password.";
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
