@@ -162,6 +162,31 @@ while ($row = $recent_activities_result->fetch_assoc()) {
             padding: 20px;
         }
 
+        /* Recent Activities Table Styles */
+        .recent-activities table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .recent-activities th, .recent-activities td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .recent-activities th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .recent-activities tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .recent-activities tr:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -180,11 +205,24 @@ while ($row = $recent_activities_result->fetch_assoc()) {
         <!-- Recent Activities Section -->
         <h2>Recent Activities</h2>
         <div class="recent-activities">
-            <ul>
-                <?php foreach ($recent_activities as $activity): ?>
-                    <li><?php echo $activity['name'] . " (CIN: " . $activity['cin'] . ") - " . $activity['created_at']; ?></li>
-                <?php endforeach; ?>
-            </ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>CIN</th>
+                        <th>Registration Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($recent_activities as $activity): ?>
+                        <tr>
+                            <td><?php echo $activity['name']; ?></td>
+                            <td><?php echo $activity['cin']; ?></td>
+                            <td><?php echo $activity['created_at']; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
 
         <!-- Existing Chart Section -->

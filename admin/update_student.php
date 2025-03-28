@@ -16,8 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $room_id = $mysqli->real_escape_string($_POST['room_id']);
 
     $profile_picture = $_FILES['profile_picture']['name'];
-    $id_card_front = $_FILES['id_card_front']['name'];
-    $id_card_back = $_FILES['id_card_back']['name'];
     $payment_receipt = $_FILES['payment_receipt']['name'];
 
     // Ensure the uploads directory exists
@@ -28,12 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Upload files
     if ($profile_picture) {
         move_uploaded_file($_FILES['profile_picture']['tmp_name'], 'uploads/' . $profile_picture);
-    }
-    if ($id_card_front) {
-        move_uploaded_file($_FILES['id_card_front']['tmp_name'], 'uploads/' . $id_card_front);
-    }
-    if ($id_card_back) {
-        move_uploaded_file($_FILES['id_card_back']['tmp_name'], 'uploads/' . $id_card_back);
     }
     if ($payment_receipt) {
         move_uploaded_file($_FILES['payment_receipt']['tmp_name'], 'uploads/' . $payment_receipt);
@@ -50,12 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               room_id='$room_id'";
     if ($profile_picture) {
         $query .= ", profile_picture='$profile_picture'";
-    }
-    if ($id_card_front) {
-        $query .= ", id_card_front='$id_card_front'";
-    }
-    if ($id_card_back) {
-        $query .= ", id_card_back='$id_card_back'";
     }
     if ($payment_receipt) {
         $query .= ", payment_receipt='$payment_receipt'";
