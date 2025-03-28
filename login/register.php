@@ -8,38 +8,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $phone = trim($_POST['phone']);
-    $gender = isset($_POST['gender']) ? $_POST['gender'] : ''; // Fix missing gender
-    $photo = "default-profile.png"; // Default profile picture
+    $gender = $_POST['gender'];
 
-    // Check if passwords match
+    // ✅ Check if passwords match
     if ($password !== $confirm_password) {
         $error = "Passwords do not match.";
     } else {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        // Check for duplicate CIN or Email
-        $stmt = $conn->prepare("SELECT email FROM students WHERE email = ? OR cin = ?");
-        $stmt->bind_param("ss", $email, $cin);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        // ✅ Handle Profile Picture Upload
+        $uploadDir = "../uploads/profile_pictures/";
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
 
-        if ($result->num_rows > 0) {
-            $error = "This email or CIN is already registered.";
-        } else {
-            // Insert student into database
-            $stmt = $conn->prepare("INSERT INTO students (cin, name, email, password, phone, gender, photo) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssss", $cin, $name, $email, $hashed_password, $phone, $gender, $photo);
+        $profile_picture = "default-profile.png"; // Default profile pic
+        if (!empty($_FILES['profile_picture']['name'])) {
+            $fileExtension = pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION);
+            $allowedExtensions = ['jpg', 'jpeg', 'png'];
+            
+            if (in_array(strtolower($fileExtension), $allowedExtensions)) {
+                $fileName = $cin . "_" . time() . "." . $fileExtension; // Unique file name
+                $targetFile = $uploadDir . $fileName;
+                
+                if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
+                    $profile_picture = $fileName;
+                } else {
+                    $error = "Failed to upload profile picture.";
+                }
+            } else {
+                $error = "Invalid file type. Only JPG, JPEG, and PNG allowed.";
+            }
+        }
+
+        // ✅ Insert into database only if no errors
+        if (!isset($error)) {
+            $stmt = $conn->prepare("INSERT INTO students (cin, name, email, password, phone, gender, profile_picture, status)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, 'not_applied')");
+            $stmt->bind_param("sssssss", $cin, $name, $email, $hashed_password, $phone, $gender, $profile_picture);
 
             if ($stmt->execute()) {
-                header("Location: ../login.php");
+                header("Location: ../login/login.php");
                 exit();
             } else {
                 $error = "Error: " . $conn->error;
             }
         }
-
-        $stmt->close();
-        $conn->close();
     }
 }
 ?>
@@ -64,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <?php if(isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
-        <form action="register.php" method="POST" onsubmit="return checkPasswords()">
+        <form action="register.php" method="POST" enctype="multipart/form-data" onsubmit="return checkPasswords()">
             <div class="form-row">
                 <div class="username">
                     <label for="cin">CIN</label>
@@ -82,16 +96,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
-            <div class="username"> <!-- Now it matches other input fields -->
-    <label for="gender">Gender</label>
-    <div class="input-container">
-        <select id="gender" name="gender" required>
-            <option value="" disabled selected>Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select>
-    </div>
-</div>
+            <!-- ✅ Gender Dropdown Styled Properly -->
+            <div class="username"> 
+                <label for="gender">Gender</label>
+                <div class="input-container gender-dropdown"> <!-- Added class for targeting -->
+                    <select id="gender" name="gender" required>
+                        <option value="" disabled selected>Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+            </div>
 
 
             <div class="form-row">
@@ -127,11 +142,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
 
+            <!-- ✅ Profile Picture Upload -->
+            <div class="username">
+                <label for="profile_picture">Profile Picture</label>
+                <div class="input-container">
+                    <input type="file" id="profile_picture" name="profile_picture" accept=".jpg, .jpeg, .png">
+                </div>
+            </div>
+
             <button type="submit" class="login">Register</button>
         </form>
 
         <div class="footer">
-            <span><a href="login.php">Already have an account? Login</a></span>
+            <span><a href="../login/login.php">Already have an account? Login</a></span>
         </div>
     </div>
 

@@ -1,3 +1,6 @@
+/* ===========================
+   General Styling
+=========================== */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -26,13 +29,15 @@ body {
     margin-bottom: 10px;
 }
 
-
 .form-row {
     display: flex;
     justify-content: space-between;
     gap: 10px;
 }
 
+/* ===========================
+   Input Fields
+=========================== */
 .username, .password, .cin, .name, .email, .phone {
     background: white;
     padding: 10px;
@@ -73,6 +78,9 @@ body {
     margin-left: 10px;
 }
 
+/* ===========================
+   Buttons
+=========================== */
 .login {
     padding: 12px;
     background: #1b6ca8;
@@ -107,19 +115,14 @@ body {
     text-decoration: underline;
 }
 
-select {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    background: white;
-    border-radius: 8px;
-    color: #4a4a4a;
+/* ===========================
+   Gender Dropdown (Only)
+=========================== */
+.input-container.gender-dropdown {
+    position: relative;
 }
 
-/* Style the gender dropdown to match input fields */
-.input-container select {
+.input-container.gender-dropdown select {
     width: 100%;
     padding: 12px;
     border: 0.5px solid #ccc;
@@ -134,13 +137,9 @@ select {
     cursor: pointer;
 }
 
-/* Add a custom dropdown arrow */
-.input-container {
-    position: relative;
-}
-
-.input-container::after {
-    content: "▼";
+/* Custom Arrow ONLY for Gender Dropdown */
+.input-container.gender-dropdown::after {
+    content: "▼"; /* Down arrow */
     position: absolute;
     right: 15px;
     top: 50%;
@@ -148,10 +147,38 @@ select {
     color: #4a4a4a;
     font-size: 16px;
     pointer-events: none;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Rotate Arrow when Select is Open */
+.input-container.gender-dropdown select:focus + ::after {
+    transform: translateY(-50%) rotate(180deg);
 }
 
 /* Hover & Focus Effects */
-.input-container select:hover,
-.input-container select:focus {
+.input-container.gender-dropdown select:hover,
+.input-container.gender-dropdown select:focus {
     border-color: #1b6ca8;
+}
+
+/* ===========================
+   Profile Picture Upload
+=========================== */
+.profile-picture-container {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.profile-picture-container input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: white;
+    border-radius: 8px;
+    color: #4a4a4a;
 }

@@ -9,74 +9,69 @@ if (!isset($_SESSION['student_cin'])) {
 
 $student_cin = $_SESSION['student_cin'];
 
-// ✅ Check if the student has already applied
-$statusQuery = $conn->prepare("SELECT status FROM students WHERE cin = ?");
-$statusQuery->bind_param("s", $student_cin);
-if (!$statusQuery->execute()) {
-    die("Query failed: " . $statusQuery->error);
-}
-$statusResult = $statusQuery->get_result();
-$statusRow = $statusResult->fetch_assoc();
-$status = $statusRow['status'];
+// ✅ Fetch student info
+$studentQuery = $conn->prepare("SELECT gender, status FROM students WHERE cin = ?");
+$studentQuery->bind_param("s", $student_cin);
+$studentQuery->execute();
+$studentResult = $studentQuery->get_result();
+$student = $studentResult->fetch_assoc();
 
-if ($status === 'pending') {
-    // ✅ If request is pending, redirect to dashboard
-    header("Location: dashboard.php");
-    exit();
-}
+$gender = $student['gender'];
+$status = $student['status'];
 
 $error = '';
 $success = '';
 
-// ✅ Function to handle file uploads securely
-function uploadFile($file, $prefix) {
-    $uploadDir = "../uploads/";
-    $fileName = $prefix . "_" . basename($file["name"]);
-    $targetFile = $uploadDir . $fileName;
-
-    // ✅ Check file type and size
-    $allowedTypes = ['jpg', 'jpeg', 'png', 'pdf'];
-    $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-    if (!in_array($fileType, $allowedTypes)) {
-        return "Invalid file type. Only JPG, JPEG, PNG, and PDF are allowed.";
-    }
-    if ($file["size"] > 2 * 1024 * 1024) { // Max size: 2MB
-        return "File is too large. Maximum allowed size is 2MB.";
-    }
-
-    if (move_uploaded_file($file["tmp_name"], $targetFile)) {
-        return $fileName;
-    } else {
-        return "Failed to upload file.";
-    }
+// ✅ Prevent multiple applications
+if ($status !== 'not_applied') {
+    echo "<script>
+            alert('You have already applied. Redirecting to dashboard...');
+            window.location.href = 'dashboard.php';
+          </script>";
+    exit();
 }
 
+// ✅ Fetch Dorms (Filtered by Student Gender)
+$dormQuery = $conn->prepare("SELECT id, name FROM dorms WHERE gender = ?");
+$dormQuery->bind_param("s", $gender);
+$dormQuery->execute();
+$dorms = $dormQuery->get_result();
+
+// ✅ Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_card_front = uploadFile($_FILES['id_card_front'], $student_cin . "_front");
-    $id_card_back = uploadFile($_FILES['id_card_back'], $student_cin . "_back");
-    $payment_receipt = uploadFile($_FILES['payment_receipt'], $student_cin . "_receipt");
+    $room_id = $_POST['room_id'];
 
-    // ✅ If all files uploaded successfully
-    if (!is_string($id_card_front) && !is_string($id_card_back) && !is_string($payment_receipt)) {
-        // ✅ Update student record and set status to 'pending'
-        $stmt = $conn->prepare("UPDATE students 
-                                SET id_card_front = ?, id_card_back = ?, payment_receipt = ?, status = 'pending'
-                                WHERE cin = ?");
-        $stmt->bind_param("ssss", $id_card_front, $id_card_back, $payment_receipt, $student_cin);
+    // ✅ Check if room has available slots
+    $roomCheck = $conn->prepare("SELECT capacity, occupied_slots FROM rooms WHERE room_id = ?");
+    $roomCheck->bind_param("s", $room_id);
+    $roomCheck->execute();
+    $roomResult = $roomCheck->get_result();
+    $room = $roomResult->fetch_assoc();
 
-        if ($stmt->execute()) {
+    if ($room['occupied_slots'] < $room['capacity']) {
+        // ✅ Assign room & update status to pending
+        $updateQuery = $conn->prepare("UPDATE students SET room_id = ?, status = 'pending' WHERE cin = ?");
+        $updateQuery->bind_param("ss", $room_id, $student_cin);
+        
+        if ($updateQuery->execute()) {
+            // ✅ Increase occupied slots in rooms table
+            $updateRoom = $conn->prepare("UPDATE rooms SET occupied_slots = occupied_slots + 1 WHERE room_id = ?");
+            $updateRoom->bind_param("s", $room_id);
+            $updateRoom->execute();
+
             $success = "Your dorm application has been submitted successfully!";
-            header("Refresh: 2; url=dashboard.php"); // ✅ Redirect to dashboard after success
+            echo "<script>
+                    setTimeout(function(){
+                        window.location.href='dashboard.php';
+                    }, 2000);
+                  </script>";
         } else {
             $error = "Error: " . $conn->error;
         }
-        $stmt->close();
     } else {
-        // ✅ If upload failed, store error
-        $error = $id_card_front ?: $id_card_back ?: $payment_receipt;
+        $error = "Selected room is full. Please choose another.";
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -85,45 +80,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Apply for Dorm</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <script src="js/apply_dorm.js"></script> <!-- AJAX for live room updates -->
 </head>
 <body>
-    <?php include 'sidebar.php'; ?>
+    <?php /* include 'sidebar.php';*/ ?>
 
     <div class="container">
         <h2>Apply for a Dorm</h2>
         
-        <?php if ($error): ?>
+        <?php if (!empty($error)): ?>
             <p class="error-message"><?php echo $error; ?></p>
-        <?php elseif ($success): ?>
+        <?php elseif (!empty($success)): ?>
             <p class="success-message"><?php echo $success; ?></p>
         <?php endif; ?>
 
-        <?php if ($status !== 'pending' && $status !== 'approved'): ?>
-            <form action="apply-dorm.php" method="POST" enctype="multipart/form-data">
-                <!-- ✅ ID Card Front -->
-                <div class="form-group">
-                    <label for="id_card_front">ID Card (Front):</label>
-                    <input type="file" name="id_card_front" required>
-                </div>
+        <form action="apply_dorm.php" method="POST">
+            <!-- ✅ Dorm Selection -->
+            <div class="form-group">
+                <label for="dorm">Choose a Dorm</label>
+                <select name="dorm" id="dorm" required>
+                    <option value="" disabled selected>Select a Dorm</option>
+                    <?php while ($dorm = $dorms->fetch_assoc()): ?>
+                        <option value="<?php echo $dorm['id']; ?>">
+                            <?php echo $dorm['name']; ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
 
-                <!-- ✅ ID Card Back -->
-                <div class="form-group">
-                    <label for="id_card_back">ID Card (Back):</label>
-                    <input type="file" name="id_card_back" required>
-                </div>
+            <!-- ✅ Room Selection (Updated by AJAX) -->
+            <div class="form-group">
+                <label for="room_id">Choose a Room</label>
+                <select name="room_id" id="room_id" required>
+                    <option value="" disabled selected>Select a Room</option>
+                </select>
+            </div>
 
-                <!-- ✅ Payment Receipt -->
-                <div class="form-group">
-                    <label for="payment_receipt">Payment Receipt:</label>
-                    <input type="file" name="payment_receipt" required>
-                </div>
-
-                <!-- ✅ Submit Button -->
-                <button type="submit" class="btn">Submit Application</button>
-            </form>
-        <?php else: ?>
-            <p class="pending-message">You have already applied for a dorm. Please wait for admin approval.</p>
-        <?php endif; ?>
+            <button type="submit" class="btn">Submit Application</button>
+        </form>
     </div>
 </body>
 </html>
