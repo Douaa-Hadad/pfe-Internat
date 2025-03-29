@@ -2,13 +2,13 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+/*
 // Check if the user is logged in as an admin
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../login/login.php');
     exit;
 }
-
+*/
 // Fetch admin details (example assumes details are stored in session)
 $adminName = htmlspecialchars($_SESSION['username']);
 $adminEmail = htmlspecialchars($_SESSION['email'] ?? 'Not provided');

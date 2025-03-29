@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['room_id'])) {
     $checkRequestQuery->store_result();
 
     if ($checkRequestQuery->num_rows > 0) {
-        echo "You already have a pending or approved room request.";
+        $message = "You already have a pending or approved room request.";
     } else {
         // Insert a new room request
         $insertRequestQuery = $conn->prepare("
@@ -32,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['room_id'])) {
         $insertRequestQuery->bind_param("ss", $student_cin, $room_id);
 
         if ($insertRequestQuery->execute()) {
-            echo "Room request submitted and is pending admin approval.";
+            $message = "Room request submitted and is pending admin approval.";
         } else {
-            echo "Error: " . $conn->error;
+            $message = "Error: " . $conn->error;
         }
 
         $insertRequestQuery->close();
@@ -172,6 +172,22 @@ $conn->close();
             background-color: #f44336;
             color: #ffffff;
         }
+        .message-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .message {
+            background-color: #ffcccc;
+            color: #cc0000;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
     <script>
         function selectRoom(roomId, isDisabled) {
@@ -197,41 +213,49 @@ $conn->close();
 </head>
 <body>
     <?php include 'sidebar.php'; ?>
-    <div class="content">
-        <form id="room_form" action="reserve_room.php" method="POST">
-            <input type="hidden" id="room_id_input" name="room_id">
-        </form>
-        <div id="roomModal" class="modal">
-            <div class="modal-content">
-                <h3>Do you want to select this room?</h3>
-                <input type="hidden" id="modalRoomId">
-                <button class="confirm" onclick="confirmRoomSelection()">Yes</button>
-                <button class="cancel" onclick="closeModal()">No</button>
+    <?php if (isset($message)): ?>
+        <div class="message-container">
+            <div class="message">
+                <?php echo htmlspecialchars($message); ?>
             </div>
         </div>
-        <?php 
-        $currentDorm = null;
-        while ($room = $roomsResult->fetch_assoc()): 
-            if ($currentDorm !== $room['dorm_name']):
-                if ($currentDorm !== null): ?>
-                    </div>
+    <?php else: ?>
+        <div class="content">
+            <form id="room_form" action="reserve_room.php" method="POST">
+                <input type="hidden" id="room_id_input" name="room_id">
+            </form>
+            <div id="roomModal" class="modal">
+                <div class="modal-content">
+                    <h3>Do you want to select this room?</h3>
+                    <input type="hidden" id="modalRoomId">
+                    <button class="confirm" onclick="confirmRoomSelection()">Yes</button>
+                    <button class="cancel" onclick="closeModal()">No</button>
                 </div>
-                <?php endif; ?>
-                <div class="dorm-section">
-                    <div class="dorm-title"><?php echo htmlspecialchars($room['dorm_name']); ?></div>
-                    <div class="room-grid">
-                <?php 
-                $currentDorm = $room['dorm_name'];
-            endif; ?>
-            <div 
-                class="room-card <?php echo $room['occupied_slots'] >= $room['capacity'] ? 'disabled' : ''; ?>" 
-                onclick="selectRoom('<?php echo $room['room_id']; ?>', <?php echo $room['occupied_slots'] >= $room['capacity'] ? 'true' : 'false'; ?>)">
-                <h4>Room <?php echo htmlspecialchars($room['room_number']); ?></h4>
-                <p>Occupied: <?php echo $room['occupied_slots']; ?>/<?php echo $room['capacity']; ?></p>
             </div>
-        <?php endwhile; ?>
+            <?php 
+            $currentDorm = null;
+            while ($room = $roomsResult->fetch_assoc()): 
+                if ($currentDorm !== $room['dorm_name']):
+                    if ($currentDorm !== null): ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <div class="dorm-section">
+                        <div class="dorm-title"><?php echo htmlspecialchars($room['dorm_name']); ?></div>
+                        <div class="room-grid">
+                    <?php 
+                    $currentDorm = $room['dorm_name'];
+                endif; ?>
+                <div 
+                    class="room-card <?php echo $room['occupied_slots'] >= $room['capacity'] ? 'disabled' : ''; ?>" 
+                    onclick="selectRoom('<?php echo $room['room_id']; ?>', <?php echo $room['occupied_slots'] >= $room['capacity'] ? 'true' : 'false'; ?>)">
+                    <h4>Room <?php echo htmlspecialchars($room['room_number']); ?></h4>
+                    <p>Occupied: <?php echo $room['occupied_slots']; ?>/<?php echo $room['capacity']; ?></p>
+                </div>
+            <?php endwhile; ?>
+            </div>
+            </div>
         </div>
-        </div>
-    </div>
+    <?php endif; ?>
 </body>
 </html>

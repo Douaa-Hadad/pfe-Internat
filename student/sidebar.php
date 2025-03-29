@@ -44,7 +44,7 @@ if (!isset($_SESSION['student_cin'])) {
     <a href="../auth/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
 </div>
 
-<script src="js/sidebar.js"></script> <
+<script src="js/sidebar.js"></script>
 
 <!-- Sidebar Toggle Button -->
 <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
