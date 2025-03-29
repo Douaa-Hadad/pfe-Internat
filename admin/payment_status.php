@@ -127,7 +127,7 @@ $result = $conn->query($sql);
                         <th>Payment Date</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tableBody">
                     <?php if ($result->num_rows > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                             <tr>
@@ -151,6 +151,21 @@ $result = $conn->query($sql);
             </table>
         </div>
     </div>
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(row => {
+                const cin = row.cells[0].textContent.toLowerCase();
+                const name = row.cells[1].textContent.toLowerCase();
+                if (cin.includes(filter) || name.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 

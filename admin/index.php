@@ -95,6 +95,7 @@ while ($row = $recent_activities_result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add this line -->
     <style>
 
         /* General Styles */
@@ -202,6 +203,12 @@ while ($row = $recent_activities_result->fetch_assoc()) {
             <div>Occupancy Rate: <?php echo $occupancy_rate; ?>%</div>
         </div>
 
+        <!-- Chart Section -->
+        <h2>Dorm Occupancy</h2>
+        <div class="chart-container">
+            <canvas id="dormOccupancyChart" width="800" height="400"></canvas>
+        </div>
+
         <!-- Recent Activities Section -->
         <h2>Recent Activities</h2>
         <div class="recent-activities">
@@ -223,12 +230,6 @@ while ($row = $recent_activities_result->fetch_assoc()) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
-
-        <!-- Existing Chart Section -->
-        <h2>Dorm Occupancy</h2>
-        <div class="chart-container">
-            <canvas id="dormOccupancyChart" width="800" height="400"></canvas>
         </div>
     </div>
 
