@@ -2,12 +2,12 @@
 session_start();
 include '../db.php';
 
-/* Redirect to login page if no session exists
+// Redirect to login page if no session exists or user is not admin
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }
-*/
+
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : "";
 
 // Prepare SQL query for student search

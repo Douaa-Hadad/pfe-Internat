@@ -68,7 +68,7 @@ CREATE TABLE `payments` (
   `student_cin` varchar(10) DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `payment_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `status` enum('pending','paid') DEFAULT 'pending'
+  `status` enum('pending','paid','not paid') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -99,6 +99,7 @@ CREATE TABLE `rooms` (
 CREATE TABLE `room_requests` (
   `id` int(11) NOT NULL,
   `student_cin` varchar(10) DEFAULT NULL,
+  `room_id` varchar(20) DEFAULT NULL,
   `status` enum('pending','accepted','rejected') DEFAULT 'pending',
   `request_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -206,13 +207,19 @@ ALTER TABLE `room_requests`
 -- Constraints for table `meal_reservations`
 --
 ALTER TABLE `meal_reservations`
-  ADD CONSTRAINT `meal_reservations_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE;
+  DROP FOREIGN KEY `meal_reservations_ibfk_1`;
+
+ALTER TABLE `meal_reservations`
+  ADD CONSTRAINT `meal_reservations_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE;
+  DROP FOREIGN KEY `payments_ibfk_1`;
+
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `rooms`
@@ -224,7 +231,10 @@ ALTER TABLE `rooms`
 -- Constraints for table `room_requests`
 --
 ALTER TABLE `room_requests`
-  ADD CONSTRAINT `room_requests_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE;
+  DROP FOREIGN KEY `room_requests_ibfk_1`;
+
+ALTER TABLE `room_requests`
+  ADD CONSTRAINT `room_requests_ibfk_1` FOREIGN KEY (`student_cin`) REFERENCES `students` (`cin`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `students`
