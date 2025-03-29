@@ -1,15 +1,13 @@
 <?php
-<<<<<<< HEAD
 if (!isset($student_name)) {
     $student_name = isset($_SESSION['student_name']) ? $_SESSION['student_name'] : 'Student';
-=======
+}
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 if (!isset($_SESSION['student_cin'])) {
     header("Location: ../auth/login.php"); // ✅ Fixed path to login
     exit();
->>>>>>> 882eca008fec5519a5920fa8025c89817c86b57f
 }
 ?>
 <head>
