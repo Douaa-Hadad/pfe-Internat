@@ -95,6 +95,7 @@ while ($row = $recent_activities_result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add this line -->
     <style>
 
         /* General Styles */
@@ -162,6 +163,31 @@ while ($row = $recent_activities_result->fetch_assoc()) {
             padding: 20px;
         }
 
+        /* Recent Activities Table Styles */
+        .recent-activities table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .recent-activities th, .recent-activities td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .recent-activities th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .recent-activities tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .recent-activities tr:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -177,20 +203,33 @@ while ($row = $recent_activities_result->fetch_assoc()) {
             <div>Occupancy Rate: <?php echo $occupancy_rate; ?>%</div>
         </div>
 
-        <!-- Recent Activities Section -->
-        <h2>Recent Activities</h2>
-        <div class="recent-activities">
-            <ul>
-                <?php foreach ($recent_activities as $activity): ?>
-                    <li><?php echo $activity['name'] . " (CIN: " . $activity['cin'] . ") - " . $activity['created_at']; ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-
-        <!-- Existing Chart Section -->
+        <!-- Chart Section -->
         <h2>Dorm Occupancy</h2>
         <div class="chart-container">
             <canvas id="dormOccupancyChart" width="800" height="400"></canvas>
+        </div>
+
+        <!-- Recent Activities Section -->
+        <h2>Recent Activities</h2>
+        <div class="recent-activities">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>CIN</th>
+                        <th>Registration Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($recent_activities as $activity): ?>
+                        <tr>
+                            <td><?php echo $activity['name']; ?></td>
+                            <td><?php echo $activity['cin']; ?></td>
+                            <td><?php echo $activity['created_at']; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 

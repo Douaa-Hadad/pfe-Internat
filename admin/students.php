@@ -218,7 +218,16 @@ $students = $mysqli->query("SELECT * FROM students");
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Major:</label>
-                                <input type="text" class="form-control" name="major" id="studentMajor">
+                                <select class="form-select" name="major" id="studentMajor" required>
+                                    <option value="" disabled selected>Select Major</option>
+                                    <option value="Genie Mecanique">Genie Mecanique</option>
+                                    <option value="Genie Informatique">Genie Informatique</option>
+                                    <option value="Genie Electrique">Genie Electrique</option>
+                                    <option value="Genie des Procedes">Genie des Procedes</option>
+                                    <option value="Finance et Commerce">Finance et Commerce</option>
+                                    <option value="Business et Marketing">Business et Marketing</option>
+                                    <option value="INED">INED</option>
+                                </select>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Year of Study:</label>
@@ -340,8 +349,9 @@ $students = $mysqli->query("SELECT * FROM students");
                                     <option value="Genie Informatique">Genie Informatique</option>
                                     <option value="Genie Electrique">Genie Electrique</option>
                                     <option value="Genie des Procedes">Genie des Procedes</option>
-                                    <option value="Finance et Comptabilité">Finance et Comptabilité</option>
+                                    <option value="Finance et Commerce">Finance et Commerce</option>
                                     <option value="Business et Marketing">Business et Marketing</option>
+                                    <option value="INED">INED</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
