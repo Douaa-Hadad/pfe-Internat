@@ -10,6 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Username and password are required.";
     } else {
         // ✅ Check if user is a student
+        //bonjour sidine
         $stmt = $conn->prepare("SELECT cin, name, email, password FROM students WHERE cin = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
