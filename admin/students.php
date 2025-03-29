@@ -7,7 +7,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }*/
-
+//test
 $students = $mysqli->query("SELECT * FROM students");
 ?>
 <!DOCTYPE html>
