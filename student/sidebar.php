@@ -41,7 +41,7 @@ if (!isset($_SESSION['student_cin'])) {
     </nav>
 
     <!-- Logout Button -->
-    <a href="../auth/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
+    <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
 </div>
 
 <script src="js/sidebar.js"></script>

@@ -7,7 +7,7 @@
             <a href="payment_reports.php" class="sidebar-button"><i class="fa-solid fa-file-invoice"></i><span> Payment Reports</span></a>
         </div>
     </nav>
-    <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i><span> Logout</span></a>
+    <a href="../../login/logout.php" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i><span> Logout</span></a>
 </div>
 <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
