@@ -70,32 +70,7 @@ while ($row = $monthly_payments_result->fetch_assoc()) {
             font-weight: bold;
             color: #555;
         }
-
-        /* Standard Table Styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+        
     </style>
 </head>
 <body>

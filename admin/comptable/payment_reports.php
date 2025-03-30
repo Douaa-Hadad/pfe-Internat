@@ -1,0 +1,154 @@
+<!-- filepath: c:\xampp\htdocs\pfe-Internat\payment-report.php -->
+<?php
+session_start();
+include '../../connection.php';
+
+// Redirect to login page if no session exists or user is not comptable
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'comptable') {
+    header("Location: ../../login/login.php");
+    exit();
+}
+// Fetch filters from the request
+$startDate = $_GET['start_date'] ?? '';
+$endDate = $_GET['end_date'] ?? '';
+$status = $_GET['status'] ?? '';
+$method = $_GET['method'] ?? '';
+
+// Build query with filters
+$query = "SELECT * FROM payments WHERE 1=1";
+if ($startDate) $query .= " AND date >= '$startDate'";
+if ($endDate) $query .= " AND date <= '$endDate'";
+if ($status) {
+    // Map user-friendly status to database values
+    $statusMap = [
+        'Paid' => 'paid',
+        'Pending' => 'pending',
+        'Unpaid' => 'not paid'
+    ];
+    $dbStatus = $statusMap[$status] ?? $status;
+    $query .= " AND status = '$dbStatus'";
+}
+if ($method) $query .= " AND method = '$method'";
+
+$result = $conn->query($query);
+
+// Calculate summary
+$totalPayments = $conn->query("SELECT SUM(amount) AS total FROM payments")->fetch_assoc()['total'];
+$pendingPayments = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='pending'")->fetch_assoc()['total'];
+$unpaidPayments = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='not paid'")->fetch_assoc()['total'];
+$unpaidStudents = $conn->query("SELECT COUNT(*) AS total FROM payments WHERE status='not paid'")->fetch_assoc()['total'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Report</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .main-content {
+            margin-left: 50px; /* Matches the sidebar width */
+        }
+
+    </style>
+</head>
+<body>
+<?php include '../header.php'; ?>
+<div class="d-flex">
+    <?php include 'sidebar.php'; ?>
+    <div class="main-content">
+        <div class="container mt-5">
+            <h1>Payment Report</h1>
+
+            <!-- Filters -->
+            <form method="GET" class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" value="<?= $startDate ?>">
+                </div>
+                <div class="col-md-3">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" value="<?= $endDate ?>">
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="">All</option>
+                        <option value="Paid" <?= $status == 'Paid' ? 'selected' : '' ?>>Paid</option>
+                        <option value="Pending" <?= $status == 'Pending' ? 'selected' : '' ?>>Pending</option>
+                        <option value="Unpaid" <?= $status == 'Unpaid' ? 'selected' : '' ?>>Unpaid</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="method" class="form-label">Payment Method</label>
+                    <select id="method" name="method" class="form-select">
+                        <option value="">All</option>
+                        <option value="Credit Card" <?= $method == 'Credit Card' ? 'selected' : '' ?>>Credit Card</option>
+                        <option value="PayPal" <?= $method == 'PayPal' ? 'selected' : '' ?>>PayPal</option>
+                        <option value="Bank Transfer" <?= $method == 'Bank Transfer' ? 'selected' : '' ?>>Bank Transfer</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary mt-4">Filter</button>
+                </div>
+            </form>
+
+            <!-- Summary -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Payments</h5>
+                            <p class="card-text"><?= number_format($totalPayments, 2) ?> MAD</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending Payments</h5>
+                            <p class="card-text"><?= number_format($pendingPayments, 2) ?> MAD</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-white bg-danger">
+                        <div class="card-body">
+                            <h5 class="card-title">Unpaid Students</h5>
+                            <p class="card-text"><?= $unpaidStudents ?> students</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Method</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?= $row['id'] ?></td>
+                        <td><?= $row['date'] ?></td>
+                        <td><?= $row['customer_name'] ?></td>
+                        <td><?= $row['method'] ?></td>
+                        <td><?= number_format($row['amount'], 2) ?> MAD</td>
+                        <td><?= $row['status'] ?></td>
+                    </tr>
+                <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

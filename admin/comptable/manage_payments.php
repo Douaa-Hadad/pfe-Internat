@@ -1,21 +1,23 @@
 <?php
 session_start();
-include '../db.php';
+include '../../connection.php';
 
-//Redirect to login page if no session exists
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'comptable') {
-    header("Location: ../login/login.php");
+// Redirect to login page if no session exists or user is not comptable
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'comptable') {
+    header("Location: ../../login/login.php");
     exit();
 }
 
-
 // Fetch all payments
 $payments_query = "
-    SELECT p.id, p.student_cin, s.name, s.email, s.phone, p.amount, p.payment_date, p.status 
+    SELECT p.id, p.student_cin, p.customer_name, p.amount, p.date, p.status, p.trimester_1_status, p.trimester_2_status, p.trimester_3_status 
     FROM payments p
-    LEFT JOIN students s ON p.student_cin = s.cin
-    ORDER BY p.payment_date DESC";
+    ORDER BY p.date DESC";
 $payments_result = $conn->query($payments_query);
+
+if (!$payments_result) {
+    die("Error fetching payments: " . $conn->error);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -176,7 +178,10 @@ $payments_result = $conn->query($payments_query);
     </style>
 </head>
 <body>
-    <?php include '../admin/header.php'; ?>
+    <?php 
+    // Adjust the include path to the correct location of header.php
+    include '../../admin/header.php'; 
+    ?>
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="payments-table">
@@ -189,10 +194,9 @@ $payments_result = $conn->query($payments_query);
                 <thead>
                     <tr>
                         <th>Student CIN</th>
-                        <th>Student Name</th>
-                        <th>Amount</th>
-                        <th>Payment Date</th>
-                        <th>Status</th>
+                        <th>Trimester 1</th>
+                        <th>Trimester 2</th>
+                        <th>Trimester 3</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -201,23 +205,23 @@ $payments_result = $conn->query($payments_query);
                         <?php while ($payment = $payments_result->fetch_assoc()): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($payment['student_cin']); ?></td>
-                                <td><?php echo htmlspecialchars($payment['name']); ?></td>
-                                <td><?php echo htmlspecialchars($payment['amount']); ?> MAD</td>
-                                <td><?php echo htmlspecialchars($payment['payment_date']); ?></td>
-                                <td class="<?php echo $payment['status'] === 'paid' ? 'paid' : 'not-paid'; ?>">
-                                    <?php echo htmlspecialchars($payment['status']); ?>
+                                <td class="<?php echo $payment['trimester_1_status'] === 'paid' ? 'paid' : 'not-paid'; ?>">
+                                    <?php echo htmlspecialchars($payment['trimester_1_status']); ?>
+                                </td>
+                                <td class="<?php echo $payment['trimester_2_status'] === 'paid' ? 'paid' : 'not-paid'; ?>">
+                                    <?php echo htmlspecialchars($payment['trimester_2_status']); ?>
+                                </td>
+                                <td class="<?php echo $payment['trimester_3_status'] === 'paid' ? 'paid' : 'not-paid'; ?>">
+                                    <?php echo htmlspecialchars($payment['trimester_3_status']); ?>
                                 </td>
                                 <td>
                                     <button class="edit-btn" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($payment)); ?>)">Edit</button>
-                                    <?php if ($payment['status'] === 'not paid'): ?>
-                                        <button class="contact-btn" onclick="openContactModal(<?php echo htmlspecialchars(json_encode($payment)); ?>)">Contact</button>
-                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6">No data available</td>
+                            <td colspan="5">No data available</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -281,6 +285,10 @@ This is a reminder that your payment of [Amount] MAD is still pending. Please ma
             document.getElementById('paymentId').value = payment.id;
             document.getElementById('editAmount').value = payment.amount;
             document.getElementById('editStatus').value = payment.status.toLowerCase(); // Ensure lowercase for consistency
+
+            // Handle "not paid" status
+            toggleAmountField(payment.status.toLowerCase());
+
             document.getElementById('editModal').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         }
@@ -290,9 +298,37 @@ This is a reminder that your payment of [Amount] MAD is still pending. Please ma
             document.getElementById('overlay').style.display = 'none';
         }
 
+        function toggleAmountField(status) {
+            const amountField = document.getElementById('editAmount');
+            if (status === 'not paid') {
+                amountField.value = ''; // Clear the amount
+                amountField.readOnly = true; // Make the field readonly
+            } else {
+                amountField.readOnly = false; // Make the field editable
+            }
+        }
+
+        // Add event listener to update amount field dynamically when status changes
+        document.getElementById('editStatus').addEventListener('change', function () {
+            toggleAmountField(this.value.toLowerCase());
+        });
+
+        // Enable the amount field before form submission
+        document.getElementById('editForm').addEventListener('submit', function () {
+            const amountField = document.getElementById('editAmount');
+            const statusField = document.getElementById('editStatus');
+
+            if (statusField.value.toLowerCase() === 'not paid') {
+                amountField.value = ''; // Ensure the amount is empty for "not paid"
+            }
+            amountField.readOnly = false; // Ensure the field is enabled for submission
+        });
+    </script>
+
+    <script>
         function openContactModal(payment) {
             document.getElementById('contactStudentCin').value = payment.student_cin;
-            document.getElementById('contactMessage').value = `Dear ${payment.name},\nThis is a reminder that your payment of ${payment.amount} MAD is still pending. Please make the payment at your earliest convenience.`;
+            document.getElementById('contactMessage').value = `Dear ${payment.customer_name},\nThis is a reminder that your payment of ${payment.amount} MAD is still pending. Please make the payment at your earliest convenience.`;
             document.getElementById('contactModal').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         }

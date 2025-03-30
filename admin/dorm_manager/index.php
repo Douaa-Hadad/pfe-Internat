@@ -170,24 +170,6 @@ while ($row = $recent_activities_result->fetch_assoc()) {
             margin-top: 10px;
         }
 
-        .recent-activities th, .recent-activities td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .recent-activities th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        .recent-activities tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .recent-activities tr:hover {
-            background-color: #f1f1f1;
-        }
     </style>
 </head>
 <body>
