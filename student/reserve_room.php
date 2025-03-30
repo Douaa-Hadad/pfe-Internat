@@ -23,8 +23,14 @@ if ($checkRequestQuery->num_rows > 0) {
     $checkRequestQuery->fetch();
 
     // Redirect if the student has a pending or accepted request
-    if ($status === 'Pending' || $status === 'Accepted') {
-        $_SESSION['error_message'] = "You already have a room request. Please check your dashboard.";
+    if ($status === 'Pending') {
+        $_SESSION['error_message'] = "You already have a pending room request. Please wait for admin approval.";
+        header("Location: dashboard.php");
+        $checkRequestQuery->close();
+        $conn->close();
+        exit();
+    } elseif ($status === 'Accepted') {
+        $_SESSION['error_message'] = "You already have an accepted room request. You cannot choose another room.";
         header("Location: dashboard.php");
         $checkRequestQuery->close();
         $conn->close();
