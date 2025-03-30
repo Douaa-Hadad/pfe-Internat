@@ -9,38 +9,48 @@ if (!isset($_SESSION['student_cin'])) {
 
 $student_cin = $_SESSION['student_cin'];
 
+// ✅ Check if the student already has a room request
+$checkRequestQuery = $conn->prepare("
+    SELECT status FROM room_requests 
+    WHERE student_cin = ?
+");
+$checkRequestQuery->bind_param("s", $student_cin);
+$checkRequestQuery->execute();
+$checkRequestQuery->store_result();
+
+if ($checkRequestQuery->num_rows > 0) {
+    $checkRequestQuery->bind_result($status);
+    $checkRequestQuery->fetch();
+
+    // Redirect if the student has a pending or accepted request
+    if ($status === 'Pending' || $status === 'Accepted') {
+        $_SESSION['error_message'] = "You already have a room request. Please check your dashboard.";
+        header("Location: dashboard.php");
+        $checkRequestQuery->close();
+        $conn->close();
+        exit();
+    }
+}
+
+$checkRequestQuery->close();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['room_id'])) {
     $room_id = $_POST['room_id'];
 
-    // Check if the student already has a pending or approved room request
-    $checkRequestQuery = $conn->prepare("
-        SELECT id FROM room_requests 
-        WHERE student_cin = ? AND status IN ('pending', 'accepted')
+    // Insert a new room request
+    $insertRequestQuery = $conn->prepare("
+        INSERT INTO room_requests (student_cin, room_id, status) 
+        VALUES (?, ?, 'Pending')
     ");
-    $checkRequestQuery->bind_param("s", $student_cin);
-    $checkRequestQuery->execute();
-    $checkRequestQuery->store_result();
+    $insertRequestQuery->bind_param("ss", $student_cin, $room_id);
 
-    if ($checkRequestQuery->num_rows > 0) {
-        $message = "You already have a pending or approved room request.";
+    if ($insertRequestQuery->execute()) {
+        $message = "Room request submitted and is pending admin approval.";
     } else {
-        // Insert a new room request
-        $insertRequestQuery = $conn->prepare("
-            INSERT INTO room_requests (student_cin, room_id, status) 
-            VALUES (?, ?, 'pending')
-        ");
-        $insertRequestQuery->bind_param("ss", $student_cin, $room_id);
-
-        if ($insertRequestQuery->execute()) {
-            $message = "Room request submitted and is pending admin approval.";
-        } else {
-            $message = "Error: " . $conn->error;
-        }
-
-        $insertRequestQuery->close();
+        $message = "Error: " . $conn->error;
     }
 
-    $checkRequestQuery->close();
+    $insertRequestQuery->close();
 }
 
 // Fetch user gender
