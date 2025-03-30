@@ -1,13 +1,13 @@
 <?php
 session_start();
-include '../db.php';
+include '../../db.php'; // Updated path to include the correct database connection file
 
-/* Redirect to login page if no session exists
+// Redirect to login page if no session exists
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }
-*/
+
 include 'sidebar.php';
 
 // Fetch room and student information with GROUP_CONCAT to avoid duplicate rows
@@ -31,7 +31,7 @@ if (!$rooms_result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
 
@@ -161,7 +161,7 @@ if (!$rooms_result) {
     </style>
 </head>
 <body>
-<?php include 'header.php'; ?>
+<?php include '../header.php'; ?> <!-- Updated path to header.php -->
 
     <div class="main-content">
         <div class="rooms-table">

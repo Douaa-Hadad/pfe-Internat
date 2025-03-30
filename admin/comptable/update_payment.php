@@ -2,12 +2,12 @@
 session_start();
 include '../db.php';
 
-/* Redirect to login page if no session exists //
+// Redirect to login page if no session exists //
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'comptable') {
     header("Location: ../login/login.php");
     exit();
 }
-*/
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payment_id = intval($_POST['payment_id']);
     $amount = floatval($_POST['amount']);

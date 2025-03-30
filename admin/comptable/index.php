@@ -24,25 +24,93 @@ $recent_payments = [];
 while ($row = $recent_payments_result->fetch_assoc()) {
     $recent_payments[] = $row;
 }
+
+// Fetch data for chart
+$monthly_payments_query = "
+    SELECT DATE_FORMAT(payment_date, '%Y-%m') AS month, SUM(amount) AS total_amount
+    FROM payments
+    GROUP BY month
+    ORDER BY month ASC";
+$monthly_payments_result = $conn->query($monthly_payments_query);
+$monthly_payments_data = [];
+while ($row = $monthly_payments_result->fetch_assoc()) {
+    $monthly_payments_data[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../admin/styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>Comptable Dashboard</title>
+    <style>
+        /* General Styles */
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Overview Section */
+        .overview {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .overview div {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Standard Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
 </head>
 <body>
     <?php include '../header.php'; ?>
     <?php include 'sidebar.php'; ?>
+    
     <div class="main-content">
+        <!-- Overview Section -->
         <h2>Dashboard Overview</h2>
         <div class="overview">
             <div>Total Payments: <?php echo $total_payments; ?></div>
             <div>Total Amount: <?php echo number_format($total_amount, 2); ?> MAD</div>
         </div>
+
+        <!-- Recent Activities Section -->
         <h2>Recent Payments</h2>
         <div class="recent-activities">
             <table>
@@ -56,7 +124,7 @@ while ($row = $recent_payments_result->fetch_assoc()) {
                 <tbody>
                     <?php foreach ($recent_payments as $payment): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($payment['student_cin']); ?></td>
+                            <td class="blue-column"><?php echo htmlspecialchars($payment['student_cin']); ?></td>
                             <td><?php echo htmlspecialchars($payment['amount']); ?> MAD</td>
                             <td><?php echo htmlspecialchars($payment['payment_date']); ?></td>
                         </tr>

@@ -215,3 +215,43 @@ tr:nth-child(even) {
 tr:hover {
     background-color: #f1f1f1;
 }
+
+.recent-activities {
+    width: 100%;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.recent-activities table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.recent-activities th, .recent-activities td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.recent-activities th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.recent-activities tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.recent-activities tr:hover {
+    background-color: #f1f1f1;
+}
+
+.blue-column {
+    color: #1e90ff; /* Blue color */
+    font-weight: bold;
+}
