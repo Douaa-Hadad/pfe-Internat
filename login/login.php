@@ -10,7 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Username and password are required.";
     } else {
         // ✅ Check if user is a student
-        //bonjour pfe mondial
         $stmt = $conn->prepare("SELECT cin, name, email, password FROM students WHERE cin = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
@@ -26,14 +25,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['student_name'] = $student['name'];
                 $_SESSION['student_email'] = $student['email'];
 
-                // ✅ Ensure redirection happens
                 header("Location: ../student/dashboard.php");
                 exit();
             }
         }
 
-        // ✅ If not found in students, check the admin table
-        $stmt = $conn->prepare("SELECT cin, name, email, password, role FROM admin WHERE cin = ? OR email = ?");
+        // ✅ If not found in students, check users table (admins)
+        $stmt = $conn->prepare("SELECT cin, full_name, email, password, role FROM users WHERE cin = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -45,12 +43,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // ✅ Store admin session
                 $_SESSION['user_type'] = 'admin';
                 $_SESSION['user_cin'] = $admin['cin'];
-                $_SESSION['user_name'] = $admin['name'];
+                $_SESSION['user_name'] = $admin['full_name'];
                 $_SESSION['user_email'] = $admin['email'];
                 $_SESSION['user_role'] = $admin['role'];
 
-                // ✅ Redirect to admin dashboard
-                header("Location: ../admin/index.php");
+                // ✅ Redirect based on role
+                if ($admin['role'] == 'comptable') {
+                    header("Location: ../admin/comptable/index.php");
+                } elseif ($admin['role'] == 'dorm_manager') {
+                    header("Location: ../admin/dorm_manager/index.php");
+                } else {
+                    header("Location: ../admin/index.php"); // Default admin page
+                }
                 exit();
             }
         }
@@ -61,8 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,6 +74,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="login.css">
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+
 </head>
 <body>
     <div class="login-container">

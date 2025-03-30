@@ -1,10 +1,10 @@
 <?php
 session_start();
-include '../db.php';
+include '../../connection.php';
 
 // Redirect to login page if no session exists or user is not comptable
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'comptable') {
-    header("Location: ../login/login.php");
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'comptable') {
+    header("Location: ../../login/login.php");
     exit();
 }
 
@@ -35,7 +35,7 @@ while ($row = $recent_payments_result->fetch_assoc()) {
     <title>Comptable Dashboard</title>
 </head>
 <body>
-    <?php include '../admin/header.php'; ?>
+    <?php include '../header.php'; ?>
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <h2>Dashboard Overview</h2>

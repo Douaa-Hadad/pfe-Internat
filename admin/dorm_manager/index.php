@@ -1,13 +1,13 @@
 <?php
 session_start();
-include '../db.php';
+include '../../connection.php';
 
-/* Redirect to login page if no session exists or user is not admin
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
-    header("Location: ../login/login.php");
+// Redirect to login page if no session exists or user is not admin
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
+    header("Location: ../../login/login.php");
     exit();
 }
-*/
+
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : "";
 
 // Prepare SQL query for student search
@@ -191,7 +191,7 @@ while ($row = $recent_activities_result->fetch_assoc()) {
     </style>
 </head>
 <body>
-    <?php include 'header.php'; ?>
+    <?php include '../header.php'; ?>
     <?php include 'sidebar.php'; ?>
     
     <div class="main-content">
