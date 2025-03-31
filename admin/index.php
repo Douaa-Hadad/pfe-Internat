@@ -2,7 +2,7 @@
 session_start();
 include '../db.php';
 
-/* Redirect to login page if no session exists or user is not admin
+/*Redirect to login page if no session exists or user is not admin
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
