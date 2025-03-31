@@ -20,6 +20,7 @@ $result_repas = mysqli_query($conn, $query_repas);
     <title>Scanner QR Code</title>
     <!-- Inclure la bibliothèque jsQR depuis le dossier local -->
     <script src="lib/jsQR.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Scanner QR Code</h1>

@@ -80,6 +80,7 @@ $result_repas = mysqli_query($conn, $query_repas);
 <head>
     <meta charset="UTF-8">
     <title>Génération des Tickets de Repas</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Génération des Tickets de Repas pour les Étudiants</h1>

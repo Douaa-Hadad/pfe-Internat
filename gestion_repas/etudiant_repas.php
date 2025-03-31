@@ -1,13 +1,11 @@
 <?php
 session_start();
 include '../connection.php';
-
 // Vérifier si l'étudiant est connecté
 if (!isset($_SESSION['student_cin'])) {
     header("Location: ../login/login.php");
     exit();
 }
-
 // Connexion à la base de données
 
 
@@ -33,6 +31,7 @@ $result = mysqli_query($conn, $query);
 <head>
     <meta charset="UTF-8">
     <title>Mes Tickets de Repas</title>
+    <link rel="stylesheet" href="s.css">
 </head>
 <body>
     <h1>Mes Tickets de Repas pour Aujourd'hui</h1>
