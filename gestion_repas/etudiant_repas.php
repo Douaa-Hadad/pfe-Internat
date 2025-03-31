@@ -3,13 +3,16 @@ session_start();
 include '../connection.php';
 
 // Vérifier si l'étudiant est connecté
-
+if (!isset($_SESSION['student_cin'])) {
+    header("Location: ../login/login.php");
+    exit();
+}
 
 // Connexion à la base de données
 
 
 // Récupérer le CIN de l'étudiant connecté depuis la session
-$cin = 'A123456789';
+$cin = $_SESSION['student_cin'];
 
 // Récupérer la date d'aujourd'hui
 $date_aujourdhui = date('Y-m-d');
@@ -44,7 +47,6 @@ $result = mysqli_query($conn, $query);
 
             echo "<h3>$type_repas du $date_repas</h3>";
             echo "<img src='qrcodes/$code_qr' alt='QR Code $type_repas' />";
-            echo $code_qr;
             echo "<p>Scannez ce code pour récupérer votre repas.</p>";
         }
     } else {

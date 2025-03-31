@@ -26,12 +26,15 @@ $row_repas = mysqli_fetch_assoc($result_repas);
 
 // Vérifier si les résultats existent avant d'accéder aux données
 if ($row && $row_repas) {
+    $profile_picture = $row['profile_picture'] ? '../admin/dorm_manager/uploads/' . $row['profile_picture'] : '../admin/dorm_manager/uploads/default.png';
     $response = [
         'success' => true,
         'cin' => $cin,
         'nom' => $row['name'],
         'repas' => $row_repas['type_repas'],
-        'date' => $date
+        'date' => $date,
+        'profile_picture' => $profile_picture // Include the correct path for the image
+        // 'profile_picture' => $row['profile_picture']
     ];
 } else {
     $response = [
