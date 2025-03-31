@@ -31,7 +31,7 @@ $result = mysqli_query($conn, $query);
 <head>
     <meta charset="UTF-8">
     <title>Mes Tickets de Repas</title>
-    <link rel="stylesheet" href="s.css">
+    <link rel="stylesheet" href="styles_student.css">
 </head>
 <body>
     <h1>Mes Tickets de Repas pour Aujourd'hui</h1>
