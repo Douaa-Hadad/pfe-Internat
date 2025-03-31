@@ -83,7 +83,7 @@ $room = $roomResult->fetch_assoc();
 
         <!-- ✅ Meal Reservations -->
         <h3>Your Meal Reservations</h3>
-        <a href="reserve-meal.php" class="btn">Reserve a Meal</a>
+        <a href="../gestion_repas/etudiant_repas.php" class="btn">Reserve a Meal</a>
 
         <a href="../login/logout.php" class="btn btn-danger">Logout</a>
     </div>

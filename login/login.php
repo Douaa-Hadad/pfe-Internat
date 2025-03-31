@@ -52,7 +52,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header("Location: ../admin/comptable/index.php");
                 } elseif ($admin['role'] == 'dorm_manager') {
                     header("Location: ../admin/dorm_manager/index.php");
-                } else {
+                } 
+                elseif ($admin['role'] == 'Gestionnaire_Tickets') {
+                    header("Location: ../gestion_repas/admin_repas.php");
+                }
+                elseif ($admin['role'] == 'Responsable_Scan') {
+                    header("Location: ../gestion_repas/scanner_qr.php");
+                }
+                else {
                     header("Location: ../admin/index.php"); // Default admin page
                 }
                 exit();
