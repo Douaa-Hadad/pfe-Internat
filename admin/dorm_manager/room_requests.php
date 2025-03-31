@@ -1,7 +1,7 @@
 <?php
 session_start();
-include '../connection.php';
-include 'header.php';
+include '../../connection.php'; // Updated path
+include '../header.php'; // Updated path
 include 'sidebar.php';
 
 // Fetch all room requests
@@ -24,7 +24,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Requests</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
     <div class="main-content">

@@ -93,7 +93,7 @@ while ($row = $recent_activities_result->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add this line -->
     <style>
@@ -170,24 +170,6 @@ while ($row = $recent_activities_result->fetch_assoc()) {
             margin-top: 10px;
         }
 
-        .recent-activities th, .recent-activities td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .recent-activities th {
-            background-color: #f4f4f4;
-            font-weight: bold;
-        }
-
-        .recent-activities tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .recent-activities tr:hover {
-            background-color: #f1f1f1;
-        }
     </style>
 </head>
 <body>

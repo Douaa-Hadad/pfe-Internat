@@ -22,3 +22,45 @@ Payment ID: 7, Amount: 700, Status: not paid
 Update successful
 Payment ID: 7, Amount: 0, Status: not paid
 Validation failed
+Payment ID: 0, Amount: 700, Status: not paid
+Validation failed
+Payment ID: 0, Amount: 700, Status: not paid
+Validation failed
+Payment ID: 0, Amount: 700, Status: not paid
+Validation failed
+Payment ID: 0, Amount: 700, Status: not paid
+Validation failed
+Payment ID: 0, Amount: 700, Status: paid
+Validation failed
+Payment ID: 0, Amount: 700, Status: paid
+Validation failed
+Payment ID: 0, Amount: 8999, Status: paid
+Validation failed
+Payment ID: 0, Amount: 7000, Status: paid
+Validation failed
+Payment ID: 0, Amount: 7, Status: paid
+Validation failed
+Received Payment ID: 0, Amount: 2, Status: paid
+Validation failed: Invalid Payment ID
+Received Payment ID: 0, Amount: 700, Status: paid
+Validation failed: Invalid Payment ID. Received: 0
+Payment ID: 1, Amount: 700, Status: paid
+Update successful
+Payment ID: 9, Amount: 0, Status: not paid
+Validation failed
+Payment ID: 9, Amount: 700, Status: not paid
+Update successful
+Payment ID: 9, Amount: 0, Status: not paid
+Validation failed
+Payment ID: 9, Amount: 0, Status: not paid
+Validation failed
+Payment ID: 8, Amount: 700, Status: paid
+Update successful
+Payment ID: 8, Amount: 0, Status: not paid
+Validation failed
+Payment ID: 8, Amount: 0, Status: not paid
+Validation failed
+Payment ID: 8, Amount: 0, Status: not paid
+Validation failed
+Payment ID: 8, Amount: 0, Status: not paid
+Validation failed

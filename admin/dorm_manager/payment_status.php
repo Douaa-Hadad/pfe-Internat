@@ -2,13 +2,12 @@
 session_start();
 $conn = new mysqli("localhost", "root", "", "estcasa");
 
-/* Redirect to login page if no session exists
+// Redirect to login page if no session exists
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }
 
-*/
 $conn = new mysqli("localhost", "root", "", "estcasa");
 
 // Check connection
@@ -36,7 +35,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestion d'internat</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -106,7 +105,7 @@ $result = $conn->query($sql);
     </style>
 </head>
 <body>
-    <?php include 'header.php'; ?>
+    <?php include '../header.php'; ?>
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="payments-table">

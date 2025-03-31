@@ -1,12 +1,12 @@
 <?php
 session_start();
 include '../db.php'; 
-/*
+
 if (!isset($_SESSION['username'])) {
     header("Location: ../login.php");
     exit();
 }
-*/
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cin = $_POST['cin']; 
     $room_id = $_POST['room_id'];

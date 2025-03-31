@@ -188,12 +188,14 @@ body {
     text-align: center;
     margin-bottom: 20px;
     color: #141460;
+    border-radius: 6px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     font-size: 16px;
+    border-radius: 6px;
 }
 
 thead {
@@ -201,9 +203,19 @@ thead {
     color: white;
 }
 
+th {
+    background-color: #141460; /* Blue background for headers */
+    color: white; /* White text for headers */
+}
+
+td {
+    background-color: white; /* White background for data cells */
+    color: black; /* Black text for data cells */
+}
+
 th, td {
     padding: 12px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ffffff;
     text-align: center;
     vertical-align: middle;
 }

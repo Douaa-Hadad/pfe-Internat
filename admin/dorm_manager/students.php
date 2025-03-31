@@ -2,11 +2,10 @@
 session_start();
 $mysqli = new mysqli("localhost", "root", "", "estcasa");
 
-/* Redirect to login page if no session exists
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
-}*/
+}
 //test
 $students = $mysqli->query("SELECT * FROM students");
 ?>
@@ -16,7 +15,7 @@ $students = $mysqli->query("SELECT * FROM students");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link href="../styles.css" rel="stylesheet">
     <style>
         
         .students-table {
@@ -145,7 +144,7 @@ $students = $mysqli->query("SELECT * FROM students");
     </style>
 </head>
 <body>
-    <?php include 'header.php'; ?>
+    <?php include '../header.php'; ?>
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="students-table">
