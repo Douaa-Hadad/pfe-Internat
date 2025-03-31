@@ -11,15 +11,24 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'comptable') {
 // Fetch payment statistics
 $total_payments_query = "SELECT COUNT(*) AS total_payments FROM payments";
 $total_payments_result = $conn->query($total_payments_query);
+if (!$total_payments_result) {
+    die("Error executing query: " . $conn->error);
+}
 $total_payments = $total_payments_result->fetch_assoc()['total_payments'];
 
 $total_amount_query = "SELECT SUM(amount) AS total_amount FROM payments";
 $total_amount_result = $conn->query($total_amount_query);
+if (!$total_amount_result) {
+    die("Error executing query: " . $conn->error);
+}
 $total_amount = $total_amount_result->fetch_assoc()['total_amount'];
 
 // Fetch recent payment activities
 $recent_payments_query = "SELECT student_cin, amount, payment_date FROM payments ORDER BY payment_date DESC LIMIT 5";
 $recent_payments_result = $conn->query($recent_payments_query);
+if (!$recent_payments_result) {
+    die("Error executing query: " . $conn->error);
+}
 $recent_payments = [];
 while ($row = $recent_payments_result->fetch_assoc()) {
     $recent_payments[] = $row;
@@ -32,6 +41,9 @@ $monthly_payments_query = "
     GROUP BY month
     ORDER BY month ASC";
 $monthly_payments_result = $conn->query($monthly_payments_query);
+if (!$monthly_payments_result) {
+    die("Error executing query: " . $conn->error);
+}
 $monthly_payments_data = [];
 while ($row = $monthly_payments_result->fetch_assoc()) {
     $monthly_payments_data[] = $row;
