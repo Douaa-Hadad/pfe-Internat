@@ -1,8 +1,12 @@
 <?php
 session_start();
-include '../../connection.php'; // Updated path
-include '../header.php'; // Updated path
-include 'sidebar.php';
+include '../../connection.php';
+
+// Redirect to login page if no session exists or user is not admin
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
+    header("Location: ../../login/login.php");
+    exit();
+}
 
 // Fetch all room requests
 $requestsQuery = $conn->prepare("
@@ -27,6 +31,8 @@ $conn->close();
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+    <?php include '../header.php'; ?>
+    <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="table-container">
             <h2>Room Requests</h2>

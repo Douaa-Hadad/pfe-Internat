@@ -1,12 +1,13 @@
 <?php
-$host = "localhost"; // Change if using a remote server
-$user = "root";      // Default XAMPP MySQL user
-$password = "";      // Default XAMPP password is empty
-$database = "estcasa"; // Your database name
+$host = '127.0.0.1'; // Database host
+$username = 'root'; // Database username
+$password = ''; // Database password
+$database = 'estcasa'; // Database name
 
-$conn = new mysqli($host, $user, $password, $database);
+// Create a new MySQLi connection
+$conn = new mysqli($host, $username, $password, $database);
 
-// Check connection
+// Check for connection errors
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

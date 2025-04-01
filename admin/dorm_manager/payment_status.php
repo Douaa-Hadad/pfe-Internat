@@ -1,10 +1,10 @@
 <?php
 session_start();
-$conn = new mysqli("localhost", "root", "", "estcasa");
+include '../../connection.php';
 
-// Redirect to login page if no session exists
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
-    header("Location: ../login/login.php");
+// Redirect to login page if no session exists or user is not admin
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
+    header("Location: ../../login/login.php");
     exit();
 }
 
