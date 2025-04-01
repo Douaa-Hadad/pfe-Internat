@@ -22,7 +22,7 @@ $query = $conn->prepare("
 $query->bind_param("s", $student_cin);
 
 if (!$query->execute()) {
-    die("Query execution failed: " . $query->error);
+    die("Query execution failed: {$query->error}");
 }
 
 $result = $query->get_result();
@@ -45,6 +45,9 @@ $room = $result->fetch_assoc();
         <p>Room Number: <?= htmlspecialchars($room['room_number']) ?></p>
         <p>Capacity: <?= $room['capacity'] ?></p>
         <p>Occupied Slots: <?= $room['occupied_slots'] ?></p>
+        <form action="change_room.php" method="post">
+            <button type="submit">Request Room Change</button>
+        </form>
     <?php else: ?>
         <p>You are not assigned to any room yet.</p>
     <?php endif; ?>
