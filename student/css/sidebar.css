@@ -1,178 +1,93 @@
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    background: #f0f2f5;
+/* ================================
+    Global Reset
+================================ */
+* {
+     box-sizing: border-box;
 }
 
-
 /* ================================
-   Sidebar Styling
+    Sidebar Styling
 ================================ */
 .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 240px;
-    height: 100%;
-    background-color: #1b6ca8;
-    padding: 20px;
-    transition: width 0.3s ease;
-    z-index: 1000;
-    color: white;
-}
-
-.sidebar .profile {
-    display: flex;
-    align-items: center;
-    margin-top: 40px; 
-    margin-bottom: 30px;
-}
-
-.profile .profile-picture {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-}
-
-.profile .username {
-    font-size: 18px;
-    font-weight: bold;
+     position: fixed; /* Changed to fixed */
+     left: 0;
+     top: 0;
+     width: 240px;
+     height: 100%;
+     background-color: #1b6ca8;
+     padding: 20px;
+     transition: width 0.3s ease;
+     z-index: 1000;
+     color: white;
 }
 
 /* ================================
-   Sidebar Buttons
-================================ */
-.sidebar-buttons {
-    margin-top: 20px;
-}
-
-.sidebar-button {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px; /* Increased padding */
-    margin: 10px 0; /* Reduced margin */
-    color: white;
-    cursor: pointer;
-    font-size: 17px; /* Increased font size */
-    white-space: nowrap;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.sidebar-button i {
-    font-size: 20px; /* Increased icon size */
-    margin-right: 15px; /* Adjusted margin */
-    margin-left: -11px;
-}
-
-.sidebar-button:hover,
-.sidebar-button.active {
-    background-color: #155a8a;
-}
-
-/* ================================
-   Logout Button
-================================ */
-
-.logout-button {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    color: white;
-    cursor: pointer;
-    font-size: 17px;
-    white-space: nowrap;
-    text-decoration: none;
-    transition: color 0.3s;
-    position: absolute;
-    bottom: 90px;
-    left: 0;
-    justify-content: center;
-}
-.logout-button i {
-    margin-right: 10px;
-}
-
-.logout-button:hover {
-    background-color: #c9302c;
-}
-
-/* ================================
-   Toggle Button
-================================ */
-.toggle-btn {
-    font-size: 22px;
-    position: fixed;
-    left: 10px;
-    top: 10px;
-    background-color: #1b6ca8;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 1001;
-    margin-left: 15px;
-}
-
-.toggle-btn:hover {
-    background-color: #155a8a;
-}
-
-/* ================================
-   Responsive Behavior
+    Responsive Behavior
 ================================ */
 @media (max-width: 768px) {
-    .sidebar {
-        width: 60px;
-        overflow: hidden;
-    }
+     .sidebar {
+          width: 60px;
+          overflow: hidden;
+     }
 
-    .sidebar-button span,
-    .logout-button span {
-        display: none;
-    }
+     .sidebar-button span,
+     .logout-button span {
+          display: none;
+     }
 
-    .sidebar .profile .username {
-        display: none;
-    }
+     .sidebar .profile .username {
+          display: none;
+     }
 }
 
 @media (min-width: 769px) {
-    .sidebar {
-        width: 240px;
-    }
+     .sidebar {
+          width: 240px;
+     }
 }
 
 /* ================================
-   Closed Sidebar Styling
+    Closed Sidebar Styling
 ================================ */
 .sidebar.closed {
-    width: 60px; /* Sidebar width when closed */
-    transition: width 0.3s ease;
+     width: 60px; /* Sidebar width when closed */
+     transition: width 0.3s ease;
 }
 
 .sidebar.closed .profile .username {
-    display: none; /* Hide username when closed */
+     display: none; /* Hide username when closed */
 }
 
 .sidebar.closed .sidebar-button span {
-    display: none; /* Hide text in buttons when closed */
+     display: none; /* Hide text in buttons when closed */
 }
 
 .sidebar.closed .sidebar-button {
-    justify-content: center; /* Center icons */
+     justify-content: center; /* Center icons */
 }
 
 .sidebar.closed .logout-button span {
-    display: none; /* Hide logout text */
+     display: none; /* Hide logout text */
 }
 
 .sidebar.closed .logout-button {
-    justify-content: center; /* Center logout icon */
+     justify-content: center; /* Center logout icon */
+}
+
+/* ================================
+    Main Content Adjustment
+================================ */
+body {
+     margin: 0;
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     display: flex;
+     flex-direction: column;
+     overflow-y: auto;
+     background: #f0f2f5;
+     margin-left: 240px; /* Adjust for sidebar width */
+     transition: margin-left 0.3s ease;
+}
+
+body.sidebar-closed {
+     margin-left: 60px; /* Adjust for closed sidebar width */
 }

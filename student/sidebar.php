@@ -33,10 +33,10 @@ if (!isset($_SESSION['student_cin'])) {
     <nav id="nav-bar">
         <div class="sidebar-buttons">
             <a href="dashboard.php" class="sidebar-button"><i class="fa-solid fa-home"></i><span> Home</span></a>
-            <a href="edit_info.php" class="sidebar-button"><i class="fa-solid fa-user-pen"></i><span>editer mes info</span></a>
-            <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
-            <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
-            <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
+            <a href="my_room.php" class="sidebar-button"><i class="fa-solid fa-user-pen"></i><span>My Room</span></a>
+            <a href="notifications.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>Notifications</span></a>
+            <a href="reclamations.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>Réclamations</span></a>
+            <a href="profile.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span>Profile Settings</span></a>
         </div>
     </nav>
 
