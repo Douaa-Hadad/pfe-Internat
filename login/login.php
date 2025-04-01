@@ -59,9 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 elseif ($admin['role'] == 'Responsable_Scan') {
                     header("Location: ../gestion_repas/scanner_qr.php");
                 }
-                else {
-                    header("Location: ../admin/index.php"); // Default admin page
-                }
+
                 exit();
             }
         }

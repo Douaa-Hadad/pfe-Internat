@@ -70,7 +70,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <body>
     <header class="header">
         <h1 class="header-title">Gestion d'internat</h1>
-        <a href="../adminprofile.php" class="profile-link">
+        <a href="profile.php" class="profile-link">
             <div class="profile">
                 <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" 
                      alt="Profile Picture" class="profile-picture">
