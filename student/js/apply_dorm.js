@@ -1,12 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("dorm").addEventListener("change", function () {
-        let dormId = this.value;
-        let floor = document.getElementById("floor").value; // Add floor selection
+    let dormSelect = document.getElementById("dorm");
+    let roomDropdown = document.getElementById("room_id");
 
-        let roomDropdown = document.getElementById("room_id");
+    if (!dormSelect || !roomDropdown) {
+        console.error("Dorm or Room dropdown is missing.");
+        return;
+    }
+
+    dormSelect.addEventListener("change", function () {
+        let dormId = dormSelect.value;
         roomDropdown.innerHTML = '<option value="" disabled selected>Loading...</option>';
 
-        fetch(`ajax/fetch_rooms.php?dorm_id=${dormId}&floor=${floor}`)
+        fetch(`ajax/fetch_rooms.php?dorm_id=${dormId}`)
             .then(response => response.json())
             .then(data => {
                 console.log("Fetched Data:", data);
@@ -19,9 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 roomDropdown.innerHTML = '<option value="" disabled selected>Select a Room</option>';
                 data.forEach(room => {
-                    roomDropdown.innerHTML += `<option value="${room.room_id}">
-                        Room ${room.room_number} (Floor ${room.floor}) - ${room.available_slots} slots left
-                    </option>`;
+                    if (room && room.room_id && room.room_number && room.available_slots !== undefined) {
+                        roomDropdown.innerHTML += `<option value="${room.room_id}">
+                            Room ${room.room_number} - ${room.available_slots} slots left
+                        </option>`;
+                    } else {
+                        console.error("Invalid room data:", room);
+                    }
                 });
             })
             .catch(error => console.error("Error fetching rooms:", error));
