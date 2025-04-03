@@ -21,7 +21,7 @@ body {
     height: 100vh;
     width: 60px; /* Smaller width when closed */
     z-index: 1000; /* Ensure sidebar is above other elements */
-    background-color: #1e1e6d;
+    background-color: #1b6ca8; /* Updated color */
     transition: width 0.3s ease; /* Smooth transition */
 }
 
@@ -38,7 +38,7 @@ body {
 }
 
 .sidebar a:hover {
-    color: #1e6db0;
+    color: #1b6ca8; /* Updated color */
 }
 
 .sidebar a i {
@@ -59,7 +59,7 @@ body {
     position: fixed;
     left: 10px;
     top: 10px;
-    background: #14146050;
+    background: #1b6ca8;
     color: white;
     padding: 10px;
     border: none;
@@ -71,7 +71,7 @@ body {
 }
 
 .toggle-btn:hover {
-    background: #1e1e6d;
+    background:rgb(22, 92, 145);
 }
 
 .sidebar:not(.open) .username {
@@ -94,9 +94,10 @@ body {
     justify-content: center;
 }
 
-.logout-button:hover {
-    color: #1e6db0;
-}
+   .toggle-btn:hover {
+        background:rgb(22, 92, 145);
+    }
+
 
 .logout-button i {
     font-size: 20px;
@@ -119,7 +120,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    background: #ced8e7;
+    background: #ffffff;
     padding: 20px;
     margin-top: 20px; /* Added margin between header and main content */
 }
@@ -161,7 +162,7 @@ body {
 
 .search-bar button {
     padding: 10px 15px;
-    background-color: #141460;
+    background-color: #1b6ca8; /* Updated color */
     color: white;
     border: none;
     border-radius: 5px;
@@ -170,14 +171,14 @@ body {
 }
 
 .search-bar button:hover {
-    background-color: #0f0f5c;
+    background-color: #0f0f5c; /* No change */
 }
 
 .table-container {
     width: 95%;
     max-width: 1100px;
     margin: 20px auto;
-    background: white;
+    background: rgb(250, 250, 250);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -187,11 +188,12 @@ body {
 .table-container h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #141460;
+    color: #1b6ca8; /* Updated color */
     border-radius: 6px;
 }
 
 table {
+    background: rgb(192, 210, 231);
     width: 100%;
     border-collapse: collapse;
     font-size: 16px;
@@ -199,17 +201,17 @@ table {
 }
 
 thead {
-    background: #141460;
+    background: #1b6ca8; /* Updated color */
     color: white;
 }
 
 th {
-    background-color: #141460; /* Blue background for headers */
+    background-color: #1b6ca8; /* Updated color */
     color: white; /* White text for headers */
 }
 
 td {
-    background-color: white; /* White background for data cells */
+    background-color: #f7f9fc; /* Slightly different color than white */
     color: black; /* Black text for data cells */
 }
 
@@ -221,7 +223,7 @@ th, td {
 }
 
 tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #eef2f7; /* Slightly different color for even rows */
 }
 
 tr:hover {
@@ -271,7 +273,7 @@ tr:hover {
 .form-container h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #141460;
+    color: #1b6ca8; /* Updated color */
 }
 
 .form-group {

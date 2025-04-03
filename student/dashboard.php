@@ -136,9 +136,12 @@ $room = $roomResult->fetch_assoc();
             <p><strong>Internat :</strong> <?php echo htmlspecialchars($room['dorm_name']); ?></p>
             <p><strong>Étage :</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
             <p><strong>Numéro de chambre :</strong> <?php echo htmlspecialchars($room['room_number']); ?></p>
+            <form action="reserve_room.php" method="POST" style="margin-top: 10px;">
+                <button type="submit" name="change_room" class="btn">Demander un changement de chambre</button>
+            </form>
         <?php else: ?>
             <p>Les détails de votre chambre ne sont pas encore disponibles.</p>
-            <a href="choose-room.php" class="btn">Choisir une chambre</a>
+            <a href="reserve_room.php" class="btn">Choisir une chambre</a>
         <?php endif; ?>
 
     </div>

@@ -59,6 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 elseif ($admin['role'] == 'Responsable_Scan') {
                     header("Location: ../gestion_repas/scanner_qr.php");
                 }
+                 elseif ($admin['role'] == 'request') {
+                    header("Location: ../admin/dorm_accepter/index.php");
+                }
 
                 exit();
             }
@@ -117,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="footer">
             <span><a href="register.php">Sign up</a></span>
-            <span>Forgot Password?</span>
+            <span><a href="forgot_password.php">Forgot Password?</a></span>
         </div>
     </div>
 

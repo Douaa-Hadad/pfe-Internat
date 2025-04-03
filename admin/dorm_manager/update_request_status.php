@@ -1,22 +1,22 @@
 <?php
 session_start();
-include '../../connection.php'; // Corrected relative path
+include '../../connection.php'; // Chemin relatif corrigé
 
-// Redirect to login page if no session exists or user is not admin
+// Rediriger vers la page de connexion si aucune session n'existe ou si l'utilisateur n'est pas un gestionnaire de dortoir
 if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
     header("Location: ../../login/login.php");
     exit();
 }
 
-// Check if request ID and action are set
+// Vérifier si l'ID de la demande et l'action sont définis
 if (isset($_POST['request_id'], $_POST['action'])) {
     $requestId = $_POST['request_id'];
     $action = $_POST['action'];
 
-    // Debugging: Log the action and request ID
-    error_log("Action: $action, Request ID: $requestId");
+    // Débogage : Enregistrer l'action et l'ID de la demande
+    error_log("Action : $action, ID de la demande : $requestId");
 
-    // Fetch the room request details
+    // Récupérer les détails de la demande de chambre
     $requestQuery = $conn->prepare("
         SELECT student_cin, room_id 
         FROM room_requests 
@@ -29,33 +29,33 @@ if (isset($_POST['request_id'], $_POST['action'])) {
 
     if ($request) {
         if ($action === 'accept') {
-            // Update the room request status to 'Accepted'
+            // Mettre à jour le statut de la demande de chambre à 'Acceptée'
             $updateRequestQuery = $conn->prepare("
                 UPDATE room_requests 
-                SET status = 'Accepted' 
+                SET status = 'Acceptée' 
                 WHERE id = ?
             ");
             $updateRequestQuery->bind_param("i", $requestId);
             $updateRequestQuery->execute();
 
-            // Assign the room ID to the student in the students table
+            // Assigner l'ID de la chambre à l'étudiant dans la table des étudiants
             $updateStudentQuery = $conn->prepare("
                 UPDATE students 
                 SET room_id = ? 
                 WHERE cin = ?
             ");
-            $updateStudentQuery->bind_param("ss", $request['room_id'], $request['student_cin']); // Fixed room_id type
+            $updateStudentQuery->bind_param("ss", $request['room_id'], $request['student_cin']);
             $updateStudentQuery->execute();
         } elseif ($action === 'decline') {
-            // Update the room request status to 'rejected'
+            // Mettre à jour le statut de la demande de chambre à 'Rejetée'
             $updateRequestQuery = $conn->prepare("
                 UPDATE room_requests 
-                SET status = 'rejected' 
+                SET status = 'Rejetée' 
                 WHERE id = ?
             ");
             $updateRequestQuery->bind_param("i", $requestId);
             if ($updateRequestQuery->execute()) {
-                // Increment the occupied slots for the room
+                // Incrémenter les places occupées pour la chambre
                 $incrementRoomSlotsQuery = $conn->prepare("
                     UPDATE rooms 
                     SET occupied_slots = occupied_slots + 1 
@@ -63,29 +63,29 @@ if (isset($_POST['request_id'], $_POST['action'])) {
                 ");
                 $incrementRoomSlotsQuery->bind_param("s", $request['room_id']);
                 if ($incrementRoomSlotsQuery->execute()) {
-                    // Log success for debugging
-                    error_log("Occupied slots incremented for Room ID " . $request['room_id']);
+                    // Enregistrer le succès pour le débogage
+                    error_log("Places occupées incrémentées pour l'ID de chambre " . $request['room_id']);
                 } else {
-                    // Log failure for debugging
-                    error_log("Failed to increment occupied slots for Room ID " . $request['room_id'] . ": " . $incrementRoomSlotsQuery->error);
+                    // Enregistrer l'échec pour le débogage
+                    error_log("Échec de l'incrémentation des places occupées pour l'ID de chambre " . $request['room_id'] . ": " . $incrementRoomSlotsQuery->error);
                 }
 
-                // Log success for debugging
-                error_log("Request ID $requestId successfully declined.");
+                // Enregistrer le succès pour le débogage
+                error_log("ID de demande $requestId rejetée avec succès.");
             } else {
-                // Log failure for debugging
-                error_log("Failed to decline Request ID $requestId: " . $updateRequestQuery->error);
+                // Enregistrer l'échec pour le débogage
+                error_log("Échec du rejet de l'ID de demande $requestId : " . $updateRequestQuery->error);
             }
 
-            // Redirect back to the room requests page
+            // Rediriger vers la page des demandes de chambre
             header("Location: room_requests.php");
             exit();
         }
     }
 } else {
-    // Debugging: Log invalid data
-    error_log("Invalid data: Request ID or action not set.");
-    // Redirect back to the room requests page if no valid data is provided
+    // Débogage : Enregistrer les données invalides
+    error_log("Données invalides : ID de demande ou action non définis.");
+    // Rediriger vers la page des demandes de chambre si aucune donnée valide n'est fournie
     header("Location: room_requests.php");
 }
 

@@ -21,7 +21,7 @@
         height: 100vh;
         width: 60px;
         z-index: 1000;
-        background-color: #1e1e6d;
+        background-color: #1b6ca8;
         transition: width 0.3s ease;
         overflow: hidden; /* Prevent content overflow */
     }
@@ -66,7 +66,7 @@
         position: fixed;
         left: 10px;
         top: 10px;
-        background: #14146050;
+        background: #1b6ca8;
         color: white;
         padding: 10px;
         border: none;
@@ -78,7 +78,7 @@
     }
 
     .toggle-btn:hover {
-        background: #1e1e6d;
+        background:rgb(22, 92, 145);
     }
 
     .logout-button {

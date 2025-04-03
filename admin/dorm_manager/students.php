@@ -2,15 +2,17 @@
 session_start();
 $mysqli = new mysqli("localhost", "root", "", "estcasa");
 
+// Rediriger vers la page de connexion si l'utilisateur n'est pas administrateur
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
 }
-//test
+
+// Récupérer tous les étudiants
 $students = $mysqli->query("SELECT * FROM students");
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,8 +21,8 @@ $students = $mysqli->query("SELECT * FROM students");
     <style>
         
         .students-table {
-            width: 95%; /* Increase table width */
-            max-width: 1100px; /* Adjust max-width */
+            width: 95%; /* Augmenter la largeur de la table */
+            max-width: 1100px; /* Ajuster la largeur maximale */
             margin: 20px auto;
             background: white;
             padding: 20px;
@@ -108,32 +110,32 @@ $students = $mysqli->query("SELECT * FROM students");
         #profilePicture {
             width: 150px; 
             height: 150px; 
-            border-radius: 50%; /* Makes it perfectly round */
-            object-fit: cover; /* Ensures the image fills the area without distortion */
+            border-radius: 50%; /* Le rend parfaitement rond */
+            object-fit: cover; /* Assure que l'image remplit la zone sans distorsion */
         }
 
         .main-content {
-            margin-left: 0; /* Remove sidebar margin if needed */
+            margin-left: 0; /* Supprimer la marge de la barre latérale si nécessaire */
             padding: 20px;
-            width: 100%; /* Make it occupy full width */
+            width: 100%; /* Faire en sorte qu'il occupe toute la largeur */
         }
 
         body {
-            margin-top: 0; /* Remove header's occupied space */
+            margin-top: 0; /* Supprimer l'espace occupé par l'en-tête */
         }
 
-        /* Ensure consistent spacing and size for action buttons */
+        /* Assurer un espacement et une taille cohérents pour les boutons d'action */
         .actions .edit, .actions .profile, .actions .delete {
-            padding: 5px 10px; /* Uniform padding */
-            margin: 0; /* Remove any extra margins */
-            width: auto; /* Ensure buttons adjust to content */
-            display: inline-block; /* Ensure buttons are inline */
+            padding: 5px 10px; /* Rembourrage uniforme */
+            margin: 0; /* Supprimer les marges supplémentaires */
+            width: auto; /* Assurer que les boutons s'ajustent au contenu */
+            display: inline-block; /* Assurer que les boutons sont en ligne */
         }
 
         .actions {
             display: flex;
             justify-content: center;
-            gap: 10px; /* Uniform gap between buttons */
+            gap: 10px; /* Espace uniforme entre les boutons */
         }
 
     
@@ -144,20 +146,20 @@ $students = $mysqli->query("SELECT * FROM students");
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="students-table">
-            <h2>Students List</h2>
+            <h2>Liste des Étudiants</h2>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search students by name or CIN...">
+                <input type="text" id="searchInput" placeholder="Rechercher des étudiants par nom ou CIN...">
                 <button type="button" id="searchButton"><i class="fa fa-search"></i></button>
             </div>
-            <button type="button" class="add-student-btn" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add New Student</button>
+            <button type="button" class="add-student-btn" data-bs-toggle="modal" data-bs-target="#addStudentModal">Ajouter un Nouvel Étudiant</button>
             <table id="studentsTable">
                 <thead>
                     <tr>
                         <th>CIN</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Gender</th>
-                        <th>Room ID</th>
+                        <th>Nom</th>
+                        <th>Téléphone</th>
+                        <th>Genre</th>
+                        <th>ID Chambre</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -170,9 +172,9 @@ $students = $mysqli->query("SELECT * FROM students");
                         <td><?= ucfirst($student['gender']) ?></td>
                         <td><?= $student['room_id'] ?></td>
                         <td class="actions">
-                            <button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#editStudentModal" data-cin="<?= $student['cin'] ?>">Edit</button>
-                            <button type="button" class="profile" data-bs-toggle="modal" data-bs-target="#profileStudentModal" data-cin="<?= $student['cin'] ?>">Profile</button>
-                            <button type="button" class="delete" data-cin="<?= $student['cin'] ?>">Delete</button>
+                            <button type="button" class="edit" data-bs-toggle="modal" data-bs-target="#editStudentModal" data-cin="<?= $student['cin'] ?>">Modifier</button>
+                            <button type="button" class="profile" data-bs-toggle="modal" data-bs-target="#profileStudentModal" data-cin="<?= $student['cin'] ?>">Profil</button>
+                            <button type="button" class="delete" data-cin="<?= $student['cin'] ?>">Supprimer</button>
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -181,13 +183,13 @@ $students = $mysqli->query("SELECT * FROM students");
         </div>
     </div>
 
-    <!-- Edit Student Modal -->
+    <!-- Modale Modifier Étudiant -->
     <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editStudentModalLabel">Edit Student Information</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editStudentModalLabel">Modifier les Informations de l'Étudiant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editForm" method="POST" action="update_student.php" enctype="multipart/form-data">
@@ -195,15 +197,15 @@ $students = $mysqli->query("SELECT * FROM students");
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Name:</label>
+                                <label class="form-label">Nom:</label>
                                 <input type="text" class="form-control" name="name" id="studentName">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Gender:</label>
+                                <label class="form-label">sexe:</label>
                                 <input type="text" class="form-control" name="gender" id="studentGender">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Phone:</label>
+                                <label class="form-label">Téléphone:</label>
                                 <input type="text" class="form-control" name="phone" id="studentPhone">
                             </div>
                             <div class="col-md-6 mb-3">
@@ -211,9 +213,9 @@ $students = $mysqli->query("SELECT * FROM students");
                                 <input type="email" class="form-control" name="email" id="studentEmail">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Major:</label>
+                                <label class="form-label">Filière:</label>
                                 <select class="form-select" name="major" id="studentMajor" required>
-                                    <option value="" disabled selected>Select Major</option>
+                                    <option value="" disabled selected>Sélectionner la Filière</option>
                                     <option value="Genie Mecanique">Genie Mecanique</option>
                                     <option value="Genie Informatique">Genie Informatique</option>
                                     <option value="Genie Electrique">Genie Electrique</option>
@@ -224,28 +226,28 @@ $students = $mysqli->query("SELECT * FROM students");
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Year of Study:</label>
+                                <label class="form-label">Année d'Étude:</label>
                                 <input type="text" class="form-control" name="year_of_study" id="studentYearOfStudy">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Room ID:</label>
+                                <label class="form-label">ID Chambre:</label>
                                 <input type="text" class="form-control" name="room_id" id="studentRoomId">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Profile Picture:</label><br>
-                                <img id="studentProfilePicture" alt="Profile Picture" class="rounded-circle edit-profile-picture"><br>
+                                <label class="form-label">Photo de Profil:</label><br>
+                                <img id="studentProfilePicture" alt="Photo de Profil" class="rounded-circle edit-profile-picture"><br>
                                 <input type="file" class="form-control" name="profile_picture">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Payment Receipt:</label><br>
-                                <img id="studentPaymentReceipt" alt="Payment Receipt" width="150"><br>
+                                <label class="form-label">Reçu de Paiement:</label><br>
+                                <img id="studentPaymentReceipt" alt="Reçu de Paiement" width="150"><br>
                                 <input type="file" class="form-control" name="payment_receipt">
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-start" style="gap: 20px;">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                            <button type="submit" id="saveButton" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                            <button type="submit" id="saveButton" class="btn btn-success">Enregistrer</button>
                         </div>
                     </form>
                 </div>
@@ -253,29 +255,29 @@ $students = $mysqli->query("SELECT * FROM students");
         </div>
     </div>
 
-    <!-- Profile Student Modal -->
+    <!-- Modale Profil Étudiant -->
     <div class="modal fade" id="profileStudentModal" tabindex="-1" aria-labelledby="profileStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="profileStudentModalLabel">Student Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="profileStudentModalLabel">Profil de l'Étudiant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
                     <div class="text-center mb-4">
-                        <img id="profilePicture" alt="Profile Picture" width="150" class="rounded-circle">
+                        <img id="profilePicture" alt="Photo de Profil" width="150" class="rounded-circle">
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Name:</label>
+                            <label class="form-label">Nom:</label>
                             <p id="profileName"></p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Gender:</label>
+                            <label class="form-label">Genre:</label>
                             <p id="profileGender"></p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Phone:</label>
+                            <label class="form-label">Téléphone:</label>
                             <p id="profilePhone"></p>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -283,15 +285,15 @@ $students = $mysqli->query("SELECT * FROM students");
                             <p id="profileEmail"></p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Major:</label>
+                            <label class="form-label">Filière:</label>
                             <p id="profileMajor"></p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Year of Study:</label>
+                            <label class="form-label">Année d'Étude:</label>
                             <p id="profileYearOfStudy"></p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Room ID:</label>
+                            <label class="form-label">ID Chambre:</label>
                             <p id="profileRoomId"></p>
                         </div>
                     </div>
@@ -300,13 +302,13 @@ $students = $mysqli->query("SELECT * FROM students");
         </div>
     </div>
 
-    <!-- Add Student Modal -->
+    <!-- Modale Ajouter Étudiant -->
     <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="addStudentModalLabel">Ajouter un Nouvel Étudiant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addForm" method="POST" action="add_student.php" enctype="multipart/form-data">
@@ -316,19 +318,19 @@ $students = $mysqli->query("SELECT * FROM students");
                                 <input type="text" class="form-control" name="cin" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Name:</label>
+                                <label class="form-label">Nom:</label>
                                 <input type="text" class="form-control" name="name" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Gender:</label>
+                                <label class="form-label">Genre:</label>
                                 <select class="form-select" name="gender" required>
-                                    <option value="" disabled selected>Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
+                                    <option value="" disabled selected>Sélectionner le Genre</option>
+                                    <option value="Male">Homme</option>
+                                    <option value="Female">Femme</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Phone:</label>
+                                <label class="form-label">Téléphone:</label>
                                 <input type="text" class="form-control" name="phone" required>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -336,9 +338,9 @@ $students = $mysqli->query("SELECT * FROM students");
                                 <input type="email" class="form-control" name="email" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Major:</label>
+                                <label class="form-label">Filière:</label>
                                 <select class="form-select" name="major" required>
-                                    <option value="" disabled selected>Select Major</option>
+                                    <option value="" disabled selected>Sélectionner la Filière</option>
                                     <option value="Genie Mecanique">Genie Mecanique</option>
                                     <option value="Genie Informatique">Genie Informatique</option>
                                     <option value="Genie Electrique">Genie Electrique</option>
@@ -349,30 +351,30 @@ $students = $mysqli->query("SELECT * FROM students");
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Year of Study:</label>
+                                <label class="form-label">Année d'Étude:</label>
                                 <select class="form-select" name="year_of_study" required>
-                                    <option value="" disabled selected>Select Year of Study</option>
-                                    <option value="1st">1st</option>
-                                    <option value="2nd">2nd</option>
+                                    <option value="" disabled selected>Sélectionner l'Année d'Étude</option>
+                                    <option value="1st">1ère</option>
+                                    <option value="2nd">2ème</option>
                                     <option value="Licence">Licence</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Room ID:</label>
+                                <label class="form-label">ID Chambre:</label>
                                 <input type="text" class="form-control" name="room_id" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Profile Picture:</label>
+                                <label class="form-label">Photo de Profil:</label>
                                 <input type="file" class="form-control" name="profile_picture" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Payment Receipt:</label>
+                                <label class="form-label">Reçu de Paiement:</label>
                                 <input type="file" class="form-control" name="payment_receipt" required>
                             </div>
                         </div>
                         <div class="d-flex justify-content-start" style="gap: 20px;">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                            <button type="submit" class="btn btn-success">Enregistrer</button>
                         </div>
                     </form>
                 </div>
@@ -380,19 +382,19 @@ $students = $mysqli->query("SELECT * FROM students");
         </div>
     </div>
 
-    <!-- Success/Error Modal -->
+    <!-- Modale Succès/Erreur -->
     <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="messageModalLabel">Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body" id="messageModalBody">
-                    <!-- Message will be inserted here -->
+                    <!-- Le message sera inséré ici -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -421,10 +423,10 @@ $students = $mysqli->query("SELECT * FROM students");
                         document.getElementById('studentMajor').value = data.major;
                         document.getElementById('studentYearOfStudy').value = data.year_of_study;
                         document.getElementById('studentRoomId').value = data.room_id;
-                        document.getElementById('studentProfilePicture').src = '../../uploads/' + data.profile_picture; // Corrected path
-                        document.getElementById('studentPaymentReceipt').src = '../../uploads/' + data.payment_receipt; // Corrected path
+                        document.getElementById('studentProfilePicture').src = '../../uploads/' + data.profile_picture; // Chemin corrigé
+                        document.getElementById('studentPaymentReceipt').src = '../../uploads/' + data.payment_receipt; // Chemin corrigé
                     })
-                    .catch(error => console.error('Error fetching student data:', error));
+                    .catch(error => console.error('Erreur lors de la récupération des données de l\'étudiant:', error));
             });
 
             var profileStudentModal = document.getElementById('profileStudentModal');
@@ -435,7 +437,7 @@ $students = $mysqli->query("SELECT * FROM students");
                 fetch('get_student.php?cin=' + cin)
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('profilePicture').src = '../../uploads/' + data.profile_picture; // Corrected path
+                        document.getElementById('profilePicture').src = '../../uploads/' + data.profile_picture; // Chemin corrigé
                         document.getElementById('profileName').innerText = data.name;
                         document.getElementById('profileGender').innerText = data.gender;
                         document.getElementById('profilePhone').innerText = data.phone;
@@ -444,7 +446,7 @@ $students = $mysqli->query("SELECT * FROM students");
                         document.getElementById('profileYearOfStudy').innerText = data.year_of_study;
                         document.getElementById('profileRoomId').innerText = data.room_id;
                     })
-                    .catch(error => console.error('Error fetching student data:', error));
+                    .catch(error => console.error('Erreur lors de la récupération des données de l\'étudiant:', error));
             });
 
             var editForm = document.getElementById('editForm');
@@ -463,13 +465,13 @@ $students = $mysqli->query("SELECT * FROM students");
                     messageModal.show();
                 })
                 .catch(error => {
-                    document.getElementById('messageModalBody').innerText = 'Error updating record: ' + error;
+                    document.getElementById('messageModalBody').innerText = 'Erreur lors de la mise à jour de l\'enregistrement: ' + error;
                     var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
                     messageModal.show();
                 });
             });
 
-            // Handle Add Student form submission
+            // Gérer la soumission du formulaire Ajouter Étudiant
             var addForm = document.getElementById('addForm');
             addForm.addEventListener('submit', function(event) {
                 event.preventDefault();
@@ -482,29 +484,29 @@ $students = $mysqli->query("SELECT * FROM students");
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.getElementById('messageModalBody').innerText = 'Student added successfully!';
-                        addForm.reset(); // Reset the form after successful submission
+                        document.getElementById('messageModalBody').innerText = 'Étudiant ajouté avec succès!';
+                        addForm.reset(); // Réinitialiser le formulaire après une soumission réussie
                         var addStudentModal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
-                        addStudentModal.hide(); // Close the Add Student modal
-                        location.reload(); // Reload the page to update the students list
+                        addStudentModal.hide(); // Fermer la modale Ajouter Étudiant
+                        location.reload(); // Recharger la page pour mettre à jour la liste des étudiants
                     } else {
-                        document.getElementById('messageModalBody').innerText = 'Error: ' + data.message;
+                        document.getElementById('messageModalBody').innerText = 'Erreur: ' + data.message;
                     }
                     var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-                    messageModal.show(); // Display the message modal
+                    messageModal.show(); // Afficher la modale de message
                 })
                 .catch(error => {
-                    document.getElementById('messageModalBody').innerText = 'Error adding student: ' + error;
+                    document.getElementById('messageModalBody').innerText = 'Erreur lors de l\'ajout de l\'étudiant: ' + error;
                     var messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-                    messageModal.show(); // Display the message modal
+                    messageModal.show(); // Afficher la modale de message
                 });
             });
 
-            // Handle Delete button click
+            // Gérer le clic sur le bouton Supprimer
             document.querySelectorAll('.delete').forEach(button => {
                 button.addEventListener('click', function() {
                     const cin = this.getAttribute('data-cin');
-                    if (confirm('Are you sure you want to delete this student?')) {
+                    if (confirm('Êtes-vous sûr de vouloir supprimer cet étudiant?')) {
                         fetch('delete_student.php', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -513,13 +515,13 @@ $students = $mysqli->query("SELECT * FROM students");
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                alert('Student deleted successfully!');
-                                location.reload(); // Reload the page to update the students list
+                                alert('Étudiant supprimé avec succès!');
+                                location.reload(); // Recharger la page pour mettre à jour la liste des étudiants
                             } else {
-                                alert('Error: ' + data.message);
+                                alert('Erreur: ' + data.message);
                             }
                         })
-                        .catch(error => alert('Error deleting student: ' + error));
+                        .catch(error => alert('Erreur lors de la suppression de l\'étudiant: ' + error));
                     }
                 });
             });

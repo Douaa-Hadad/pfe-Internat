@@ -1,0 +1,10 @@
+DELIMITER $$
+
+CREATE EVENT IF NOT EXISTS RecalculateOccupiedSlotsEvent
+ON SCHEDULE EVERY 1 HOUR
+DO
+BEGIN
+    CALL RecalculateOccupiedSlots();
+END$$
+
+DELIMITER ;

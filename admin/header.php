@@ -15,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #141460;
+            background-color: #1b6ca8;
             color: white;
             padding: 19px 20px; /* Increased padding to make the header 8px taller */
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);

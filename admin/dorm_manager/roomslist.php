@@ -62,7 +62,7 @@ if (!$rooms_result) {
 
         .dorm-section h3 {
             text-align: center;
-            color: #141460;
+            color: #1b6ca8;
         }
 
         .room-card {
@@ -79,7 +79,7 @@ if (!$rooms_result) {
 
         .room-card h3 {
             margin: 10px 0;
-            color: #141460;
+            color: #1b6ca8;
             font-size: 14px;
         }
 
@@ -116,7 +116,7 @@ if (!$rooms_result) {
         }
 
         .close-btn {
-            color: #141460;
+            color: #1b6ca8;
             font-size: 20px;
             border: none;
             padding: 10px;
@@ -148,7 +148,7 @@ if (!$rooms_result) {
         .floor-buttons button {
             margin: 5px;
             padding: 10px 20px;
-            background-color: #141460;
+            background-color: #1b6ca8;
             color: white;
             border: none;
             border-radius: 5px;
