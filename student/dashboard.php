@@ -12,18 +12,32 @@ $student_name = $_SESSION['student_name'];
 
 // ✅ Fetch student status
 $statusQuery = $conn->prepare("SELECT status FROM students WHERE cin = ?");
+if (!$statusQuery) {
+    die("Error preparing statement for student status: " . $conn->error); // Debugging error
+}
 $statusQuery->bind_param("s", $student_cin);
 $statusQuery->execute();
 $statusResult = $statusQuery->get_result();
 $statusRow = $statusResult->fetch_assoc();
 $status = $statusRow['status'];
 
+// ✅ Check if the student has a dorm application
+$dormApplicationQuery = $conn->prepare("SELECT COUNT(*) AS application_count FROM dorm_applications WHERE name = ?");
+if (!$dormApplicationQuery) {
+    die("Error preparing statement for dorm application: " . $conn->error); // Debugging error
+}
+$dormApplicationQuery->bind_param("s", $student_name); // Use student_name instead of student_cin
+$dormApplicationQuery->execute();
+$dormApplicationResult = $dormApplicationQuery->get_result();
+$dormApplicationRow = $dormApplicationResult->fetch_assoc();
+$hasDormApplication = $dormApplicationRow['application_count'] > 0;
+
 if ($status === 'not_applied') {
     // ✅ New students who haven't applied for a dorm yet
     echo "<div class='container'>";
     echo "<h2>Bienvenue, $student_name!</h2>";
     echo "<p>Vous n'avez pas encore postulé pour un internat.</p>";
-    echo "<a href='apply_dorm.php' class='btn'>Postuler pour un internat</a>";
+    echo "<a href='apply_dorm.php' class='btn'>Soumettre demande d'internat</a>"; // Button to apply for a dorm
     echo "<a href='../login/logout.php' class='btn btn-danger'>Se déconnecter</a>";
     echo "</div>";
     exit(); 
@@ -63,6 +77,46 @@ $room = $roomResult->fetch_assoc();
     <meta charset="UTF-8">
     <title>Tableau de bord étudiant</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        /* Inline CSS for additional styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 9000px; /* Increased width */
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #333333;
+        }
+        p {
+            color: #555555;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        
+        }
+    </style>
 </head>
 <body>
     <?php include 'sidebar.php'; ?>
@@ -70,22 +124,23 @@ $room = $roomResult->fetch_assoc();
     <div class="container">
         <h2>Bienvenue, <?php echo htmlspecialchars($student_name); ?>!</h2>
 
+        <!-- ✅ Dorm Application Button -->
+        <?php if (!$hasDormApplication): ?>
+            <p>Vous n'avez pas encore soumis de demande d'internat.</p>
+            <a href="apply_dorm.php" class="btn">Demande d'internat</a>
+        <?php endif; ?>
+
         <!-- ✅ Room Info -->
         <h3>Votre chambre</h3>
-        <?php if ($room): ?>
+        <?php if ($room && $room['dorm_name'] && $room['floor'] && $room['room_number']): ?>
             <p><strong>Internat :</strong> <?php echo htmlspecialchars($room['dorm_name']); ?></p>
             <p><strong>Étage :</strong> <?php echo htmlspecialchars($room['floor']); ?></p>
             <p><strong>Numéro de chambre :</strong> <?php echo htmlspecialchars($room['room_number']); ?></p>
         <?php else: ?>
-            <p>Vous n'avez pas encore sélectionné de chambre.</p>
+            <p>Les détails de votre chambre ne sont pas encore disponibles.</p>
             <a href="choose-room.php" class="btn">Choisir une chambre</a>
         <?php endif; ?>
 
-        <!-- ✅ Meal Reservations -->
-        <h3>Vos réservations de repas</h3>
-        <a href="etudiant_repas.php" class="btn">Réserver un repas</a>
-
-        <a href="../login/logout.php" class="btn btn-danger">Se déconnecter</a>
     </div>
 </body>
 </html>

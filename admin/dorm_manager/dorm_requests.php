@@ -58,11 +58,85 @@ $conn->close();
         .btn-decline:hover {
             background-color: #d32f2f;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color:rgba(192, 202, 224, 0.71);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            width: 50%;
+            max-width: 400px;
+        }
+
+        .modal-content .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .modal-content .close-btn:hover {
+            color: #ddd;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            const modal = document.querySelector('.modal');
+            const modalMessage = document.querySelector('.modal-message');
+            const closeBtn = document.querySelector('.modal-content .close-btn');
+
+            if (message) {
+                modalMessage.textContent = message;
+                modal.style.display = 'flex';
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function () {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     <?php include '../header.php'; ?>
     <?php include 'sidebar.php'; ?>
+    <div class="modal">
+        <div class="modal-content">
+            <button class="close-btn">&times;</button>
+            <p class="modal-message"></p>
+        </div>
+    </div>
     <div class="main-content">
         <div class="table-container">
             <h2>Dorm Requests</h2>

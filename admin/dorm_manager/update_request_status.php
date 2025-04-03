@@ -47,14 +47,39 @@ if (isset($_POST['request_id'], $_POST['action'])) {
             $updateStudentQuery->bind_param("ss", $request['room_id'], $request['student_cin']); // Fixed room_id type
             $updateStudentQuery->execute();
         } elseif ($action === 'decline') {
-            // Update the room request status to 'Declined'
+            // Update the room request status to 'rejected'
             $updateRequestQuery = $conn->prepare("
                 UPDATE room_requests 
-                SET status = 'Declined' 
+                SET status = 'rejected' 
                 WHERE id = ?
             ");
             $updateRequestQuery->bind_param("i", $requestId);
-            $updateRequestQuery->execute();
+            if ($updateRequestQuery->execute()) {
+                // Increment the occupied slots for the room
+                $incrementRoomSlotsQuery = $conn->prepare("
+                    UPDATE rooms 
+                    SET occupied_slots = occupied_slots + 1 
+                    WHERE id = ?
+                ");
+                $incrementRoomSlotsQuery->bind_param("s", $request['room_id']);
+                if ($incrementRoomSlotsQuery->execute()) {
+                    // Log success for debugging
+                    error_log("Occupied slots incremented for Room ID " . $request['room_id']);
+                } else {
+                    // Log failure for debugging
+                    error_log("Failed to increment occupied slots for Room ID " . $request['room_id'] . ": " . $incrementRoomSlotsQuery->error);
+                }
+
+                // Log success for debugging
+                error_log("Request ID $requestId successfully declined.");
+            } else {
+                // Log failure for debugging
+                error_log("Failed to decline Request ID $requestId: " . $updateRequestQuery->error);
+            }
+
+            // Redirect back to the room requests page
+            header("Location: room_requests.php");
+            exit();
         }
     }
 } else {

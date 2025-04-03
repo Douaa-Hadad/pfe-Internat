@@ -19,14 +19,18 @@ if ($conn->connect_error) {
 $sql = "
     SELECT 
         s.cin, s.name, s.email, s.phone, 
-        IFNULL(p.status, 'not paid') AS payment_status, 
+        IFNULL(p.frais_d_inscription, 'unpaid') AS payment_status, 
         IFNULL(p.amount, 0) AS amount, 
-        p.payment_date
+        p.date AS payment_date
     FROM students s
     LEFT JOIN payments p ON s.cin = p.student_cin
     ORDER BY s.name ASC
 ";
 $result = $conn->query($sql);
+
+if (!$result) {
+    die("Error executing query: " . $conn->error);
+}
 ?>
 
 <!DOCTYPE html>

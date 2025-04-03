@@ -34,6 +34,7 @@ $result = mysqli_query($conn, $query);
     <link rel="stylesheet" href="styles_student.css">
 </head>
 <body>
+<?php include 'sidebar.php'; ?>
     <h1>Mes Tickets de Repas pour Aujourd'hui</h1>
 
     <?php
