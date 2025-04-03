@@ -50,6 +50,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['room_id'])) {
     exit();
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_request'])) {
+    // ✅ Delete the old rejected request
+    if ($requestExists && $status === 'rejected') {
+        $deleteRequestQuery = $conn->prepare("DELETE FROM room_requests WHERE id = ?");
+        $deleteRequestQuery->bind_param("i", $requestId);
+        $deleteRequestQuery->execute();
+        $deleteRequestQuery->close();
+    }
+
+    // Redirect to the same page to allow submitting a new request
+    header("Location: reserve_room.php");
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['change_room'])) {
+    // ✅ Reset the current request and allow the student to start a new one
+    if ($requestExists && $status === 'accepted') {
+        $resetRequestQuery = $conn->prepare("DELETE FROM room_requests WHERE id = ?");
+        $resetRequestQuery->bind_param("i", $requestId);
+        $resetRequestQuery->execute();
+        $resetRequestQuery->close();
+
+        $_SESSION['message'] = "Votre demande précédente a été réinitialisée. Veuillez sélectionner une nouvelle chambre.";
+    }
+
+    // Redirect to the same page to display the room list
+    header("Location: reserve_room.php");
+    exit();
+}
+
 // Fetch user gender
 $genderQuery = $conn->prepare("SELECT gender FROM students WHERE cin = ?");
 $genderQuery->bind_param("s", $student_cin);
@@ -76,7 +106,6 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserve Room</title>
-    <link rel="stylesheet" href="css/sidebar.css">
     <style>
         .message-container {
             display: flex;
@@ -95,21 +124,32 @@ $conn->close();
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .room-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
+            display: grid; /* Use grid layout */
+            grid-template-columns: repeat(4, auto); /* 4 rooms per row with auto width */
+            gap: 20px; /* Space between cards */
+            justify-content: center; /* Center the grid */
+            margin: 20px; /* Add margin around the grid */
         }
         .room-card {
             background-color: #f4f4f4;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 15px; /* Slightly increase padding */
+            border-radius: 8px; /* Slightly smaller border radius */
             cursor: pointer;
             transition: 0.3s;
-            border: 2px solid transparent;
+            border: 2px solid #ccc; /* Persistent border */
+            width: 140px; /* Slightly increase width */
+            height: 110px; /* Slightly increase height */
+            text-align: center; /* Center text inside the card */
+            box-sizing: border-box; /* Include padding and border in width/height */
+            overflow: hidden; /* Prevent overflow of content */
         }
         .room-card:hover {
-            border-color: #007bff;
+            border-color: #007bff; /* Change border color on hover */
+        }
+        .room-card h4, .room-card p {
+            margin: 8px 0; /* Add consistent spacing between elements */
+            font-size: 14px; /* Increase font size for better readability */
+            line-height: 1.4; /* Adjust line height for better spacing */
         }
     </style>
     <script>
@@ -125,14 +165,30 @@ $conn->close();
     <?php if ($requestExists && $status === 'pending'): ?>
         <div class="message-container">
             <div class="message">
-                You already have a pending room request. Please wait for admin approval.
+                Vous avez déjà une demande de chambre en attente. Veuillez attendre l'approbation de l'administration.
+            </div>
+        </div>
+    <?php elseif ($requestExists && $status === 'rejected'): ?>
+        <div class="message-container">
+            <div class="message">
+                Votre demande de chambre a été rejetée. Veuillez soumettre une nouvelle demande.
+                <form action="reserve_room.php" method="POST" style="margin-top: 10px;">
+                    <button type="submit" name="new_request" style="padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: inherit; font-size: inherit;">
+                        Soumettre une nouvelle demande
+                    </button>
+                </form>
             </div>
         </div>
     <?php else: ?>
         <?php if ($requestExists && $status === 'accepted'): ?>
             <div class="message-container">
                 <div class="message">
-                    Your room request was accepted. You can change your room if needed.
+                    Votre demande de chambre a été acceptée. Vous pouvez changer de chambre si nécessaire.
+                    <form action="reserve_room.php" method="POST" style="margin-top: 10px;">
+                        <button type="submit" name="change_room" style="padding: 10px 20px; background-color: #17a2b8; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: inherit; font-size: inherit;">
+                            Changer de chambre
+                        </button>
+                    </form>
                 </div>
             </div>
         <?php endif; ?>
@@ -145,13 +201,13 @@ $conn->close();
                 <?php if ($roomsResult->num_rows > 0): ?>
                     <?php while ($room = $roomsResult->fetch_assoc()): ?>
                         <div class="room-card" onclick="selectRoom('<?php echo $room['room_id']; ?>')">
-                            <h4>Room <?php echo htmlspecialchars($room['room_number']); ?></h4>
-                            <p>Dorm: <?php echo htmlspecialchars($room['dorm_name']); ?></p>
-                            <p>Occupied: <?php echo $room['occupied_slots']; ?>/<?php echo $room['capacity']; ?></p>
+                            <h4> <?php echo htmlspecialchars($room['room_number']); ?></h4>
+                            <p>Dortoir : <?php echo htmlspecialchars($room['dorm_name']); ?></p>
+                            <p>Occupé : <?php echo $room['occupied_slots']; ?>/<?php echo $room['capacity']; ?></p>
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <p>No rooms available at the moment.</p>
+                    <p>Aucune chambre disponible pour le moment.</p>
                 <?php endif; ?>
             </div>
         </div>

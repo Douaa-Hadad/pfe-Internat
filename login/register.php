@@ -69,42 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Hash password
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-            // Handle profile picture upload
-            $profile_picture = "default-profile.png";
-            if (!empty($_FILES['profile_picture']['name'])) {
-                $uploadDir = "../uploads/profile_pictures/";
-                if (!file_exists($uploadDir)) {
-                    mkdir($uploadDir, 0775, true);
-                }
-
-                $fileExtension = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
-                $allowedExtensions = ['jpg', 'jpeg', 'png'];
-                
-                if (in_array($fileExtension, $allowedExtensions)) {
-                    if ($_FILES['profile_picture']['size'] > 2000000) {
-                        $error = "Profile picture must be less than 2MB.";
-                    } else {
-                        $fileName = $form_data['cin'] . "_" . time() . "." . $fileExtension;
-                        $targetFile = $uploadDir . $fileName;
-                        
-                        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
-                            $profile_picture = $fileName;
-                        } else {
-                            $error = "Failed to upload profile picture.";
-                        }
-                    }
-                } else {
-                    $error = "Invalid file type. Only JPG, JPEG, and PNG allowed.";
-                }
-            }
-
             // If still no errors, insert into database
             if (empty($error)) {
                 $current_time = date('Y-m-d H:i:s');
-                $stmt = $conn->prepare("INSERT INTO students (cin, name, email, password, phone, gender, profile_picture, status, created_at) 
-                                      VALUES (?, ?, ?, ?, ?, ?, ?, 'not_applied', ?)");
-                $stmt->bind_param("ssssssss", $form_data['cin'], $form_data['name'], $form_data['email'], 
-                                $hashed_password, $form_data['phone'], $form_data['gender'], $profile_picture, $current_time);
+                $stmt = $conn->prepare("INSERT INTO students (cin, name, email, password, phone, gender, status, created_at) 
+                                      VALUES (?, ?, ?, ?, ?, ?, 'not_applied', ?)");
+                $stmt->bind_param("sssssss", $form_data['cin'], $form_data['name'], $form_data['email'], 
+                                $hashed_password, $form_data['phone'], $form_data['gender'], $current_time);
 
                 if ($stmt->execute()) {
                     $success = "Registration successful! Redirecting to login...";
@@ -144,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p style="color:green;"><?php echo $success; ?></p>
         <?php endif; ?>
 
-        <form action="register.php" method="POST" enctype="multipart/form-data">
+        <form action="register.php" method="POST">
             <div class="form-row">
                 <div class="username">
                     <label for="cin">CIN</label>
@@ -212,15 +183,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <ion-icon name="eye-outline" class="toggle-password" onclick="togglePassword('confirm_password')"></ion-icon>
                 </div>
                 <span id="password-match" style="font-size:12px; color:red;"></span>
-            </div>
-
-            <div class="username">
-                <label for="profile_picture">Profile Picture</label>
-                <div class="input-container">
-                    <ion-icon name="image-outline"></ion-icon>
-                    <input type="file" id="profile_picture" name="profile_picture" accept=".jpg,.jpeg,.png">
-                </div>
-                <small style="font-size:12px;">Max 2MB (JPG, JPEG, PNG only)</small>
             </div>
 
             <button type="submit" class="login">Register</button>

@@ -1,64 +1,70 @@
 <?php
 session_start();
-include '../connection.php';
+include '../../connection.php'; // Corrected relative path
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Redirect to login page if no session exists or user is not admin
+if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
+    header("Location: ../../login/login.php");
+    exit();
+}
+
+// Check if request ID and action are set
+if (isset($_POST['request_id'], $_POST['action'])) {
     $requestId = $_POST['request_id'];
     $action = $_POST['action'];
 
-    if ($action === 'accept') {
-        $status = 'Accepted';
+    // Debugging: Log the action and request ID
+    error_log("Action: $action, Request ID: $requestId");
 
-        // Fetch the room_id and student_cin for the request
-        $fetchRequestQuery = $conn->prepare("
-            SELECT room_id, student_cin 
-            FROM room_requests 
-            WHERE id = ?
-        ");
-        $fetchRequestQuery->bind_param('i', $requestId);
-        $fetchRequestQuery->execute();
-        $fetchRequestQuery->bind_result($roomId, $studentCin);
-        $fetchRequestQuery->fetch();
-        $fetchRequestQuery->close();
-
-        // Update the room's occupied slots
-        $updateRoomQuery = $conn->prepare("
-            UPDATE rooms 
-            SET occupied_slots = occupied_slots + 1 
-            WHERE room_id = ?
-        ");
-        $updateRoomQuery->bind_param('s', $roomId);
-        $updateRoomQuery->execute();
-        $updateRoomQuery->close();
-
-        // Assign the room to the student
-        $assignRoomQuery = $conn->prepare("
-            UPDATE students 
-            SET room_id = ? 
-            WHERE cin = ?
-        ");
-        $assignRoomQuery->bind_param('ss', $roomId, $studentCin);
-        $assignRoomQuery->execute();
-        $assignRoomQuery->close();
-    } elseif ($action === 'decline') {
-        $status = 'Declined';
-    } else {
-        header('Location: room_requests.php');
-        exit;
-    }
-
-    // Update the request status
-    $updateRequestQuery = $conn->prepare("
-        UPDATE room_requests 
-        SET status = ? 
+    // Fetch the room request details
+    $requestQuery = $conn->prepare("
+        SELECT student_cin, room_id 
+        FROM room_requests 
         WHERE id = ?
     ");
-    $updateRequestQuery->bind_param('si', $status, $requestId);
-    $updateRequestQuery->execute();
-    $updateRequestQuery->close();
+    $requestQuery->bind_param("i", $requestId);
+    $requestQuery->execute();
+    $requestResult = $requestQuery->get_result();
+    $request = $requestResult->fetch_assoc();
 
-    $conn->close();
-    header('Location: room_requests.php');
-    exit;
+    if ($request) {
+        if ($action === 'accept') {
+            // Update the room request status to 'Accepted'
+            $updateRequestQuery = $conn->prepare("
+                UPDATE room_requests 
+                SET status = 'Accepted' 
+                WHERE id = ?
+            ");
+            $updateRequestQuery->bind_param("i", $requestId);
+            $updateRequestQuery->execute();
+
+            // Assign the room ID to the student in the students table
+            $updateStudentQuery = $conn->prepare("
+                UPDATE students 
+                SET room_id = ? 
+                WHERE cin = ?
+            ");
+            $updateStudentQuery->bind_param("ss", $request['room_id'], $request['student_cin']); // Fixed room_id type
+            $updateStudentQuery->execute();
+        } elseif ($action === 'decline') {
+            // Update the room request status to 'Declined'
+            $updateRequestQuery = $conn->prepare("
+                UPDATE room_requests 
+                SET status = 'Declined' 
+                WHERE id = ?
+            ");
+            $updateRequestQuery->bind_param("i", $requestId);
+            $updateRequestQuery->execute();
+        }
+    }
+} else {
+    // Debugging: Log invalid data
+    error_log("Invalid data: Request ID or action not set.");
+    // Redirect back to the room requests page if no valid data is provided
+    header("Location: room_requests.php");
 }
+
+$conn->close();
+header("Location: room_requests.php");
+exit();
 ?>

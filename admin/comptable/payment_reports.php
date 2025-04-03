@@ -26,17 +26,24 @@ if ($status) {
         'Unpaid' => 'not paid'
     ];
     $dbStatus = $statusMap[$status] ?? $status;
-    $query .= " AND status = '$dbStatus'";
+    $query .= " AND (trimester_1_status = '$dbStatus' OR trimester_2_status = '$dbStatus' OR trimester_3_status = '$dbStatus')";
 }
 if ($method) $query .= " AND method = '$method'";
 
 $result = $conn->query($query);
 
-// Calculate summary
-$totalPayments = $conn->query("SELECT SUM(amount) AS total FROM payments")->fetch_assoc()['total'];
-$pendingPayments = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='pending'")->fetch_assoc()['total'];
-$unpaidPayments = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE status='not paid'")->fetch_assoc()['total'];
-$unpaidStudents = $conn->query("SELECT COUNT(*) AS total FROM payments WHERE status='not paid'")->fetch_assoc()['total'];
+// Calculate summary with error handling
+$totalPaymentsQuery = $conn->query("SELECT SUM(amount) AS total FROM payments");
+$totalPayments = $totalPaymentsQuery ? $totalPaymentsQuery->fetch_assoc()['total'] : 0;
+
+$pendingPaymentsQuery = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE trimester_1_status='pending' OR trimester_2_status='pending' OR trimester_3_status='pending'");
+$pendingPayments = $pendingPaymentsQuery ? $pendingPaymentsQuery->fetch_assoc()['total'] : 0;
+
+$unpaidPaymentsQuery = $conn->query("SELECT SUM(amount) AS total FROM payments WHERE trimester_1_status='not paid' OR trimester_2_status='not paid' OR trimester_3_status='not paid'");
+$unpaidPayments = $unpaidPaymentsQuery ? $unpaidPaymentsQuery->fetch_assoc()['total'] : 0;
+
+$unpaidStudentsQuery = $conn->query("SELECT COUNT(*) AS total FROM payments WHERE trimester_1_status='not paid' OR trimester_2_status='not paid' OR trimester_3_status='not paid'");
+$unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['total'] : 0;
 ?>
 
 <!DOCTYPE html>
@@ -131,7 +138,9 @@ $unpaidStudents = $conn->query("SELECT COUNT(*) AS total FROM payments WHERE sta
                     <th>Customer</th>
                     <th>Method</th>
                     <th>Amount</th>
-                    <th>Status</th>
+                    <th>Trimester 1 Status</th>
+                    <th>Trimester 2 Status</th>
+                    <th>Trimester 3 Status</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -142,7 +151,9 @@ $unpaidStudents = $conn->query("SELECT COUNT(*) AS total FROM payments WHERE sta
                         <td><?= $row['customer_name'] ?></td>
                         <td><?= $row['method'] ?></td>
                         <td><?= number_format($row['amount'], 2) ?> MAD</td>
-                        <td><?= $row['status'] ?></td>
+                        <td><?= $row['trimester_1_status'] ?></td>
+                        <td><?= $row['trimester_2_status'] ?></td>
+                        <td><?= $row['trimester_3_status'] ?></td>
                     </tr>
                 <?php endwhile; ?>
                 </tbody>

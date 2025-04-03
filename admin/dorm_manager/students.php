@@ -136,10 +136,6 @@ $students = $mysqli->query("SELECT * FROM students");
             gap: 10px; /* Uniform gap between buttons */
         }
 
-        .main-content {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
     
     </style>
 </head>
@@ -425,8 +421,8 @@ $students = $mysqli->query("SELECT * FROM students");
                         document.getElementById('studentMajor').value = data.major;
                         document.getElementById('studentYearOfStudy').value = data.year_of_study;
                         document.getElementById('studentRoomId').value = data.room_id;
-                        document.getElementById('studentProfilePicture').src = 'uploads/' + data.profile_picture;
-                        document.getElementById('studentPaymentReceipt').src = 'uploads/' + data.payment_receipt;
+                        document.getElementById('studentProfilePicture').src = '../../uploads/' + data.profile_picture; // Corrected path
+                        document.getElementById('studentPaymentReceipt').src = '../../uploads/' + data.payment_receipt; // Corrected path
                     })
                     .catch(error => console.error('Error fetching student data:', error));
             });
@@ -439,7 +435,7 @@ $students = $mysqli->query("SELECT * FROM students");
                 fetch('get_student.php?cin=' + cin)
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('profilePicture').src = 'uploads/' + data.profile_picture;
+                        document.getElementById('profilePicture').src = '../../uploads/' + data.profile_picture; // Corrected path
                         document.getElementById('profileName').innerText = data.name;
                         document.getElementById('profileGender').innerText = data.gender;
                         document.getElementById('profilePhone').innerText = data.phone;

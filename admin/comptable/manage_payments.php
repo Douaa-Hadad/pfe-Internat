@@ -222,6 +222,10 @@ if (!$payments_result) {
         <form id="editForm" method="POST" action="update_payment.php">
             <input type="hidden" name="payment_id" id="paymentId">
             <div class="form-group">
+                <label for="editAmount">Amount:</label>
+                <input type="number" name="amount" id="editAmount" class="form-control" step="0.01" min="0">
+            </div>
+            <div class="form-group">
                 <label for="editFraisInscription">Frais d'Inscription:</label>
                 <select name="frais_d_inscription" id="editFraisInscription" class="form-control" required>
                     <option value="paid">Paid</option>
@@ -264,6 +268,7 @@ if (!$payments_result) {
     <script>
         function openEditModal(payment) {
             document.getElementById('paymentId').value = payment.id;
+            document.getElementById('editAmount').value = payment.amount;
             document.getElementById('editFraisInscription').value = payment.frais_d_inscription.toLowerCase();
             document.getElementById('editTrimester1').value = payment.trimester_1_status.toLowerCase();
             document.getElementById('editTrimester2').value = payment.trimester_2_status.toLowerCase();
@@ -276,6 +281,14 @@ if (!$payments_result) {
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Check for the 'update' query parameter in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('update') === 'success') {
+            alert('Update successful!');
+            // Remove the query parameter from the URL
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
     </script>
 </body>

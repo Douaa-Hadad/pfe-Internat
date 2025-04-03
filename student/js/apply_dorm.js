@@ -1,20 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("dorm").addEventListener("change", function () {
         let dormId = this.value;
-        let floorElement = document.getElementById("floor");
-        if (!floorElement) {
-            console.error("Error: Floor selection element not found.");
-            return; // Exit the function if floor element is not found
-        }
-        let floor = floorElement.value; // Add floor selection
+        let floor = document.getElementById("floor").value; // Add floor selection
 
         let roomDropdown = document.getElementById("room_id");
-        if (roomDropdown) {
-            roomDropdown.innerHTML = '<option value="" disabled selected>Loading...</option>';
-        } else {
-            console.error("Error: Room dropdown element not found.");
-            return; // Exit the function if roomDropdown is not found
-        }
+        roomDropdown.innerHTML = '<option value="" disabled selected>Loading...</option>';
 
         fetch(`ajax/fetch_rooms.php?dorm_id=${dormId}&floor=${floor}`)
             .then(response => response.json())

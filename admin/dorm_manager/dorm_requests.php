@@ -8,14 +8,17 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager')
     exit();
 }
 
-// Fetch all room requests
+// Fetch all dorm requests
 $requestsQuery = $conn->prepare("
-    SELECT rr.id, rr.student_cin, s.name AS student_name, rr.room_id, rr.status, rr.request_date
-    FROM room_requests rr
-    JOIN students s ON rr.student_cin = s.cin
-    WHERE rr.status != 'Accepted'
-    ORDER BY rr.request_date DESC
+    SELECT id, name, email, city, status, created_at
+    FROM dorm_applications
+    ORDER BY created_at DESC
 ");
+
+if (!$requestsQuery) {
+    die("Error preparing query: " . $conn->error);
+}
+
 $requestsQuery->execute();
 $requestsResult = $requestsQuery->get_result();
 
@@ -27,7 +30,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Requests</title>
+    <title>Dorm Requests</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
         .btn-accept {
@@ -62,14 +65,14 @@ $conn->close();
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="table-container">
-            <h2>Room Requests</h2>
+            <h2>Dorm Requests</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Request ID</th>
-                        <th>Student CIN</th>
-                        <th>Student Name</th>
-                        <th>Room ID</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>City</th>
                         <th>Status</th>
                         <th>Request Date</th>
                         <th>Actions</th>
@@ -78,23 +81,25 @@ $conn->close();
                 <tbody>
                     <?php while ($request = $requestsResult->fetch_assoc()): ?>
                         <tr>
-                            <td><?= htmlspecialchars($request['id']); ?></td>
-                            <td><?= htmlspecialchars($request['student_cin']); ?></td>
-                            <td><?= htmlspecialchars($request['student_name']); ?></td>
-                            <td><?= htmlspecialchars($request['room_id']); ?></td>
+                        <td><?= htmlspecialchars($request['id']); ?></td>
+                            <td><?= htmlspecialchars($request['name']); ?></td>
+                            <td><?= htmlspecialchars($request['email']); ?></td>
+                            <td><?= htmlspecialchars($request['city']); ?></td>
                             <td class="status-<?= strtolower($request['status']); ?>">
                                 <?= htmlspecialchars($request['status']); ?>
                             </td>
-                            <td><?= htmlspecialchars($request['request_date']); ?></td>
+                            <td><?= htmlspecialchars($request['created_at']); ?></td>
                             <td>
-                                <form method="post" action="update_request_status.php" style="display:inline;">
-                                    <input type="hidden" name="request_id" value="<?= htmlspecialchars($request['id']); ?>">
-                                    <button type="submit" name="action" value="accept" class="btn-accept">Accept</button>
-                                </form>
-                                <form method="post" action="update_request_status.php" style="display:inline;">
-                                    <input type="hidden" name="request_id" value="<?= htmlspecialchars($request['id']); ?>">
-                                    <button type="submit" name="action" value="decline" class="btn-decline">Decline</button>
-                                </form>
+                                <?php if ($request['status'] === 'Pending'): ?>
+                                    <form method="post" action="update_dorm_status.php" style="display:inline;">
+                                        <input type="hidden" name="request_id" value="<?= htmlspecialchars($request['id']); ?>">
+                                        <button type="submit" name="action" value="approve" class="btn-accept">Approve</button>
+                                    </form>
+                                    <form method="post" action="update_dorm_status.php" style="display:inline;">
+                                        <input type="hidden" name="request_id" value="<?= htmlspecialchars($request['id']); ?>">
+                                        <button type="submit" name="action" value="reject" class="btn-decline">Reject</button>
+                                    </form>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -102,6 +107,5 @@ $conn->close();
             </table>
         </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>

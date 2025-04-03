@@ -32,8 +32,7 @@ body {
     margin: 17px 0;
     color: white;
     cursor: pointer;
-    font-size: 15px;
-    white-space: nowrap;
+    font-size: 16px;
     text-decoration: none;
     transition: color 0.3s;
 }
@@ -122,6 +121,7 @@ body {
     width: 100%;
     background: #ced8e7;
     padding: 20px;
+    margin-top: 20px; /* Added margin between header and main content */
 }
 
 .form-group {
@@ -226,4 +226,73 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #f1f1f1;
+}
+
+.btn-accept {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none;
+    padding: 8px 12px; /* Adjusted padding for better appearance */
+    cursor: pointer;
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.btn-accept:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.btn-decline {
+    background-color: #f44336; /* Red background */
+    color: white; /* White text */
+    border: none;
+    padding: 8px 12px; /* Adjusted padding for better appearance */
+    cursor: pointer;
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.btn-decline:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+.form-container {
+    width: 95%;
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #141460;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    border-color: #1950a4cb;
+    outline: none;
 }

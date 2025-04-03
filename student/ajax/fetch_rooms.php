@@ -1,30 +1,28 @@
 <?php
 include '../../connection.php';
 
-if (isset($_GET['dorm_id'])) {
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+header('Content-Type: application/json'); // ✅ Ensure JSON output
+
+if (isset($_GET['dorm_id'])) {  // ✅ Removed "floor" requirement
     $dorm_id = $_GET['dorm_id'];
+    $floor = isset($_GET['floor']) ? $_GET['floor'] : null;
 
-    // Debugging: Print dorm_id to check if it's received correctly
-    error_log("Received dorm_id: " . $dorm_id);
+    $query = "SELECT room_id, room_number, floor, (capacity - occupied_slots) AS available_slots FROM rooms WHERE dorm_id = ?";
+    $params = [$dorm_id];
+    $types = "i";
 
-    $query = $conn->prepare("SELECT room_id, room_number, capacity - occupied_slots AS available_slots 
-                             FROM rooms WHERE dorm_id = ? AND capacity > occupied_slots");
-    
-    if (!$query) {
-        die("Query Preparation Failed: " . $conn->error);
+    if ($floor !== null) {
+        $query .= " AND floor = ?";
+        $params[] = $floor;
+        $types .= "i";
     }
 
-    $query->bind_param("i", $dorm_id);
-    if (!$query->execute()) {
-        die("Query Execution Failed: " . $query->error);
-    }
-
-    $result = $query->get_result();
-    
-    // Debugging: Check if any rows are fetched
-    if ($result->num_rows === 0) {
-        error_log("No rooms found for dorm_id: " . $dorm_id);
-    }
+    $roomQuery = $conn->prepare($query);
+    $roomQuery->bind_param($types, ...$params);
+    $roomQuery->execute();
+    $result = $roomQuery->get_result();
 
     $rooms = [];
     while ($row = $result->fetch_assoc()) {
@@ -32,5 +30,7 @@ if (isset($_GET['dorm_id'])) {
     }
 
     echo json_encode($rooms);
+} else {
+    echo json_encode(["error" => "Missing dorm_id"]);
 }
 ?>
