@@ -1,8 +1,8 @@
 <?php
 session_start();
-include '../../db.php'; // Updated path to include the correct database connection file
+include '../../db.php'; // Chemin mis à jour pour inclure le fichier de connexion à la base de données
 
-// Redirect to login page if no session exists
+// Rediriger vers la page de connexion si aucune session n'existe
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header("Location: ../login/login.php");
     exit();
@@ -10,24 +10,24 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
 
 include 'sidebar.php';
 
-// Fetch room and student information with GROUP_CONCAT to avoid duplicate rows
+// Récupérer les informations des chambres et des étudiants avec GROUP_CONCAT pour éviter les doublons
 $rooms_query = "SELECT rooms.room_number, rooms.floor, rooms.capacity, rooms.occupied_slots, rooms.dorm_id, 
-                       dorms.name AS dorm_name,  -- Fetch the dorm name
-                       COALESCE(GROUP_CONCAT(students.name SEPARATOR ', '), 'No Students') AS student_names
+                       dorms.name AS dorm_name,  -- Récupérer le nom du dortoir
+                       COALESCE(GROUP_CONCAT(students.name SEPARATOR ', '), 'Aucun étudiant') AS student_names
                 FROM rooms 
-                LEFT JOIN students ON rooms.room_id = students.room_id  -- Corrected column name
-                LEFT JOIN dorms ON rooms.dorm_id = dorms.id  -- Join to get the dorm name
+                LEFT JOIN students ON rooms.room_id = students.room_id  -- Nom de colonne corrigé
+                LEFT JOIN dorms ON rooms.dorm_id = dorms.id  -- Jointure pour obtenir le nom du dortoir
                 GROUP BY rooms.room_number, rooms.floor, rooms.capacity, rooms.occupied_slots, rooms.dorm_id, dorms.name
                 ORDER BY rooms.dorm_id, rooms.room_number";
 $rooms_result = $conn->query($rooms_query);
 
 if (!$rooms_result) {
-    die("Query failed: " . $conn->error);
+    die("Échec de la requête : " . $conn->error);
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +38,7 @@ if (!$rooms_result) {
         .rooms-table {
             width: 100%;
             max-width: 1100px;
-            margin-top: 100px; /* Default margin for when opened */
+            margin-top: 100px; /* Marge par défaut lors de l'ouverture */
             background: white;
             padding: 40px;
             padding-right: 20px;
@@ -48,11 +48,11 @@ if (!$rooms_result) {
             display: flex;
             flex-wrap: nowrap;
             justify-content: center;
-            transition: margin-top 0.3s ease; /* Smooth transition for margin changes */
+            transition: margin-top 0.3s ease; /* Transition fluide pour les changements de marge */
         }
 
         .rooms-table.opened {
-            margin-top: 300px; /* Add more space when opened */
+            margin-top: 300px; /* Ajouter plus d'espace lors de l'ouverture */
         }
 
         .dorm-section {
@@ -66,7 +66,7 @@ if (!$rooms_result) {
         }
 
         .room-card {
-            display: none; /* Initially hide all room cards */
+            display: none; /* Masquer toutes les cartes de chambre au départ */
             width: 30%;
             height: 50px;
             margin: 1%;
@@ -103,12 +103,12 @@ if (!$rooms_result) {
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 40px; /* Increase padding */
+            padding: 40px; /* Augmenter le padding */
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            width: 40%; /* Increase width */
-            max-width: 800px; /* Set a maximum width */
+            width: 40%; /* Augmenter la largeur */
+            max-width: 800px; /* Définir une largeur maximale */
         }
 
         .room-info h3 {
@@ -161,7 +161,7 @@ if (!$rooms_result) {
     </style>
 </head>
 <body>
-<?php include '../header.php'; ?> <!-- Updated path to header.php -->
+<?php include '../header.php'; ?> <!-- Chemin mis à jour vers header.php -->
 
     <div class="main-content">
         <div class="rooms-table">
@@ -174,18 +174,18 @@ if (!$rooms_result) {
                     <?php endif; 
                     $current_dorm = $row['dorm_id']; ?>
                     <div class="dorm-section">
-                    <h3><?php echo htmlspecialchars($row['dorm_name']); ?></h3> <!-- Display dorm name here -->
+                    <h3><?php echo htmlspecialchars($row['dorm_name']); ?></h3> <!-- Afficher le nom du dortoir ici -->
                     <div class="floor-buttons">
-                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', 'all')">All Floors</button>
-                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '1')">Floor 1</button>
-                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '2')">Floor 2</button>
-                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '3')">Floor 3</button>
-                        <!-- Add more buttons for additional floors as needed -->
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', 'all')">Tous les étages</button>
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '1')">Étage 1</button>
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '2')">Étage 2</button>
+                        <button onclick="toggleRooms('<?php echo $row['dorm_id']; ?>', '3')">Étage 3</button>
+                        <!-- Ajouter plus de boutons pour les étages supplémentaires si nécessaire -->
                     </div>
                 <?php endif; ?>
                 <div class="room-card" data-dorm="<?php echo htmlspecialchars($row['dorm_id']); ?>" data-floor="<?php echo htmlspecialchars($row['floor']); ?>">
                     <button onclick="showRoomInfo('<?php echo htmlspecialchars($row['room_number']); ?>', '<?php echo htmlspecialchars($row['floor']); ?>', '<?php echo htmlspecialchars($row['capacity']); ?>', '<?php echo htmlspecialchars($row['occupied_slots']); ?>', '<?php echo htmlspecialchars($row['student_names']); ?>')">
-                        <h3>Room <?php echo htmlspecialchars($row['room_number']); ?></h3>
+                        <h3>Chambre <?php echo htmlspecialchars($row['room_number']); ?></h3>
                     </button>
                 </div>
             <?php endwhile; ?>
@@ -194,7 +194,7 @@ if (!$rooms_result) {
         <div id="overlay" class="overlay" onclick="closeRoomInfo()"></div>
         <div id="room-info" class="room-info">
             <button class="close-btn" onclick="closeRoomInfo()">X</button>
-            <h3>Room Information</h3>
+            <h3>Informations sur la chambre</h3>
             <p id="room-number"></p>
             <p id="room-floor"></p>
             <p id="room-capacity"></p>
@@ -220,7 +220,7 @@ if (!$rooms_result) {
                 }
             }
 
-            // Adjust margin based on visibility
+            // Ajuster la marge en fonction de la visibilité
             if (isAnyVisible) {
                 roomsTable.classList.add('opened');
             } else {
@@ -229,11 +229,11 @@ if (!$rooms_result) {
         }
 
         function showRoomInfo(roomNumber, floor, capacity, occupiedSlots, studentNames) {
-            document.getElementById('room-number').innerText = 'Room Number: ' + roomNumber;
-            document.getElementById('room-floor').innerText = 'Floor: ' + floor;
-            document.getElementById('room-capacity').innerText = 'Capacity: ' + capacity;
-            document.getElementById('room-occupied').innerText = 'Occupied Slots: ' + occupiedSlots;
-            document.getElementById('room-students').innerText = 'Students: ' + studentNames;
+            document.getElementById('room-number').innerText = 'Numéro de chambre : ' + roomNumber;
+            document.getElementById('room-floor').innerText = 'Étage : ' + floor;
+            document.getElementById('room-capacity').innerText = 'Capacité : ' + capacity;
+            document.getElementById('room-occupied').innerText = 'Places occupées : ' + occupiedSlots;
+            document.getElementById('room-students').innerText = 'Étudiants : ' + studentNames;
             document.getElementById('room-info').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         }

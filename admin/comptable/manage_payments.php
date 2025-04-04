@@ -28,7 +28,7 @@ if (!$payments_result) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>Manage Payments</title>
+    <title>Gérer les Paiements</title>
     <style>
         .main-content {
             margin-left: 0;
@@ -162,22 +162,22 @@ if (!$payments_result) {
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="payments-table">
-            <h2>Manage Payments</h2>
+            <h2>Gérer les Paiements</h2>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search payments by student CIN or name...">
+                <input type="text" id="searchInput" placeholder="Rechercher des paiements par CIN ou nom de l'étudiant...">
                 <button type="button" id="searchButton"><i class="fa fa-search"></i></button>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Student CIN</th>
-                        <th>Student Name</th>
-                        <th>Amount</th>
+                        <th>CIN Étudiant</th>
+                        <th>Nom Étudiant</th>
+                        <th>Montant</th>
                         <th>Frais d'Inscription</th>
-                        <th>Payment Date</th>
-                        <th>Trimester 1</th>
-                        <th>Trimester 2</th>
-                        <th>Trimester 3</th>
+                        <th>Date de Paiement</th>
+                        <th>Trimestre 1</th>
+                        <th>Trimestre 2</th>
+                        <th>Trimestre 3</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -202,7 +202,7 @@ if (!$payments_result) {
                                     <?php echo htmlspecialchars($payment['trimester_3_status']); ?>
                                 </td>
                                 <td>
-                                    <button class="edit-btn" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($payment)); ?>)">Edit</button>
+                                    <button class="edit-btn" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($payment)); ?>)">Modifier</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -218,47 +218,47 @@ if (!$payments_result) {
 
     <!-- Edit Payment Modal -->
     <div class="modal" id="editModal">
-        <div class="modal-header">Edit Payment</div>
+        <div class="modal-header">Modifier le Paiement</div>
         <form id="editForm" method="POST" action="update_payment.php">
             <input type="hidden" name="payment_id" id="paymentId">
             <div class="form-group">
-                <label for="editAmount">Amount:</label>
+                <label for="editAmount">Montant :</label>
                 <input type="number" name="amount" id="editAmount" class="form-control" step="0.01" min="0">
             </div>
             <div class="form-group">
-                <label for="editFraisInscription">Frais d'Inscription:</label>
+                <label for="editFraisInscription">Frais d'Inscription :</label>
                 <select name="frais_d_inscription" id="editFraisInscription" class="form-control" required>
-                    <option value="paid">Paid</option>
-                    <option value="unpaid">Unpaid</option>
+                    <option value="paid">Payé</option>
+                    <option value="unpaid">Non Payé</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="editTrimester1">Trimester 1 Status:</label>
+                <label for="editTrimester1">Statut Trimestre 1 :</label>
                 <select name="trimester_1_status" id="editTrimester1" class="form-control" required>
-                    <option value="paid">Paid</option>
-                    <option value="not paid">Not Paid</option>
-                    <option value="pending">Pending</option>
+                    <option value="paid">Payé</option>
+                    <option value="not paid">Non Payé</option>
+                    <option value="pending">En Attente</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="editTrimester2">Trimester 2 Status:</label>
+                <label for="editTrimester2">Statut Trimestre 2 :</label>
                 <select name="trimester_2_status" id="editTrimester2" class="form-control" required>
-                    <option value="paid">Paid</option>
-                    <option value="not paid">Not Paid</option>
-                    <option value="pending">Pending</option>
+                    <option value="paid">Payé</option>
+                    <option value="not paid">Non Payé</option>
+                    <option value="pending">En Attente</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="editTrimester3">Trimester 3 Status:</label>
+                <label for="editTrimester3">Statut Trimestre 3 :</label>
                 <select name="trimester_3_status" id="editTrimester3" class="form-control" required>
-                    <option value="paid">Paid</option>
-                    <option value="not paid">Not Paid</option>
-                    <option value="pending">Pending</option>
+                    <option value="paid">Payé</option>
+                    <option value="not paid">Non Payé</option>
+                    <option value="pending">En Attente</option>
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
-                <button type="submit" class="save-btn">Save</button>
+                <button type="button" class="cancel-btn" onclick="closeEditModal()">Annuler</button>
+                <button type="submit" class="save-btn">Enregistrer</button>
             </div>
         </form>
     </div>
@@ -286,7 +286,7 @@ if (!$payments_result) {
         // Check for the 'update' query parameter in the URL
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('update') === 'success') {
-            alert('Update successful!');
+            alert('Mise à jour réussie !');
             // Remove the query parameter from the URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }

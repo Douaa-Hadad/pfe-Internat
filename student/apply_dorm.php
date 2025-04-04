@@ -21,7 +21,7 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) {
     $student = $result->fetch_assoc();
 } else {
-    echo "Student not found.";
+    echo "Étudiant non trouvé.";
     exit();
 }
 
@@ -43,11 +43,11 @@ $checkApplicationQuery->close();
 // Display message if an application already exists
 if ($applicationExists) {
     if ($applicationStatus === 'Pending') {
-        $message = "Vous avez déjà une demande de dortoir en attente. Veuillez attendre l'approbation de l'administration.";
+        $message = "Vous avez déjà une demande d'internat en attente. Veuillez attendre l'approbation de l'administration.";
     } elseif ($applicationStatus === 'Rejected') {
-        $message = "Votre demande de dortoir a été rejetée. Veuillez soumettre une nouvelle demande.";
+        $message = "Votre demande d'internat a été rejetée. Veuillez soumettre une nouvelle demande.";
     } elseif ($applicationStatus === 'Approved') {
-        $message = "Votre demande de dortoir a été acceptée. Vous ne pouvez pas soumettre une nouvelle demande.";
+        $message = "Votre demande d'internat a été acceptée. Vous ne pouvez pas soumettre une nouvelle demande.";
     }
 }
 
@@ -61,28 +61,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$applicationExists) {
     // Insert into database
     $sql = "INSERT INTO dorm_applications (name, email, city, status) VALUES ('$name', '$email', '$city', 'Pending')";
     if ($conn->query($sql) === TRUE) {
-        $message = "Application submitted successfully!";
+        $message = "Demande soumise avec succès!";
         header("Location: apply_dorm.php?message=" . urlencode($message));
         exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Erreur: " . $sql . "<br>" . $conn->error;
     }
 }
 
 // Prevent form submission if the application is accepted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $applicationExists && $applicationStatus === 'Accepted') {
-    $message = "Votre demande de dortoir a été acceptée. Vous ne pouvez pas soumettre une nouvelle demande.";
+    $message = "Votre demande d'internat a été acceptée. Vous ne pouvez pas soumettre une nouvelle demande.";
 }
 
 $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Dorm</title>
+    <title>Demande d'internat</title>
     <style>
 body {
     font-family: Arial, sans-serif;
@@ -108,24 +108,24 @@ form {
     width: 100%;
     max-width: 600px;
     display: grid;
-    grid-template-columns: 1fr; /* Single column layout */
-    gap: 15px; /* Add spacing between fields */
+    grid-template-columns: 1fr;
+    gap: 15px;
 }
 
 label {
     display: block;
-    margin-bottom: 5px; /* Add space below labels */
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
 input, select {
     width: 100%;
-    padding: 10px; /* Adjust padding for better balance */
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
-    background-color: #fff; /* Ensure consistent background */
+    box-sizing: border-box;
+    background-color: #fff;
 }
 
 button.bttn {
@@ -144,16 +144,16 @@ button.bttn:hover {
 }
 
 .full-width {
-    grid-column: span 1; /* Ensure full-width fields span the container */
+    grid-column: span 1;
 }
 
 @media (min-width: 600px) {
     form {
-        grid-template-columns: 1fr 1fr; /* Two-column layout for wider screens */
+        grid-template-columns: 1fr 1fr;
     }
 
     .full-width {
-        grid-column: span 2; /* Full-width fields span both columns */
+        grid-column: span 2;
     }
 }
 
@@ -213,10 +213,10 @@ button.bttn:hover {
             </div>
         </div>
     <?php else: ?>
-        <h1>Apply for Dorm</h1>
+        <h1>Demande d'internat</h1>
         <form method="POST" action="">
             <div>
-                <label for="name">Name:</label>
+                <label for="name">Nom:</label>
                 <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($student['name']); ?>" required>
             </div>
             <div>
@@ -224,36 +224,36 @@ button.bttn:hover {
                 <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" required>
             </div>
             <div>
-                <label for="phone">Phone:</label>
+                <label for="phone">Téléphone:</label>
                 <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($student['phone']); ?>" required>
             </div>
             <div>
-                <label for="gender">Gender:</label>
+                <label for="gender">Genre:</label>
                 <input type="text" id="gender" name="gender" value="<?php echo htmlspecialchars($student['gender']); ?>" readonly>
             </div>
             <div>
-                <label for="year_of_study">Year of Study:</label>
+                <label for="year_of_study">Année d'Étude:</label>
                 <input type="text" id="year_of_study" name="year_of_study" value="<?php echo htmlspecialchars($student['year_of_study']); ?>" required>
             </div>
             <div>
-                <label for="major">Major:</label>
+                <label for="major">Filière:</label>
                 <select id="major" name="major" required>
-                    <option value="" disabled selected>Select Major</option>
-                    <option value="Genie Mecanique" <?php echo ($student['major'] === 'Genie Mecanique') ? 'selected' : ''; ?>>Genie Mecanique</option>
-                    <option value="Genie Informatique" <?php echo ($student['major'] === 'Genie Informatique') ? 'selected' : ''; ?>>Genie Informatique</option>
-                    <option value="Genie Electrique" <?php echo ($student['major'] === 'Genie Electrique') ? 'selected' : ''; ?>>Genie Electrique</option>
-                    <option value="Genie des Procedes" <?php echo ($student['major'] === 'Genie des Procedes') ? 'selected' : ''; ?>>Genie des Procedes</option>
+                    <option value="" disabled selected>Choisir une Filière</option>
+                    <option value="Genie Mecanique" <?php echo ($student['major'] === 'Genie Mecanique') ? 'selected' : ''; ?>>Génie Mécanique</option>
+                    <option value="Genie Informatique" <?php echo ($student['major'] === 'Genie Informatique') ? 'selected' : ''; ?>>Génie Informatique</option>
+                    <option value="Genie Electrique" <?php echo ($student['major'] === 'Genie Electrique') ? 'selected' : ''; ?>>Génie Électrique</option>
+                    <option value="Genie des Procedes" <?php echo ($student['major'] === 'Genie des Procedes') ? 'selected' : ''; ?>>Génie des Procédés</option>
                     <option value="Finance et Commerce" <?php echo ($student['major'] === 'Finance et Commerce') ? 'selected' : ''; ?>>Finance et Commerce</option>
                     <option value="Business et Marketing" <?php echo ($student['major'] === 'Business et Marketing') ? 'selected' : ''; ?>>Business et Marketing</option>
                     <option value="INED" <?php echo ($student['major'] === 'INED') ? 'selected' : ''; ?>>INED</option>
                 </select>
             </div>
             <div class="full-width">
-                <label for="city">City:</label>
+                <label for="city">Ville:</label>
                 <input type="text" id="city" name="city" required>
             </div>
             <div class="full-width">
-                <button type="submit" class="bttn">Submit Application</button>
+                <button type="submit" class="bttn">Soumettre la Demande</button>
             </div>
         </form>
     <?php endif; ?>

@@ -289,18 +289,16 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
         </a>
         <hr>-->
 
-        <!-- Navigation Section -->
-        <nav id="nav-bar">
-            <div class="sidebar-buttons">
-                <a href="dashboard.php" class="sidebar-button"><i class="fa-solid fa-home"></i><span> Home</span></a>
-                <?php if ($dorm_status !== 'Approved') { ?>
-                    <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
-                <?php } ?>
-                <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
-                <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
-                <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
-            </div>
-        </nav>
+    <!-- Navigation Section -->
+    <nav id="nav-bar">
+        <div class="sidebar-buttons">
+            <a href="dashboard.php" class="sidebar-button"><i class="fa-solid fa-home"></i><span> Home</span></a>
+            <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
+            <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
+            <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
+            <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
+        </div>
+    </nav>
 
         <!-- Logout Button -->
         <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>

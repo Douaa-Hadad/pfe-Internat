@@ -51,7 +51,7 @@ $unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['to
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Report</title>
+    <title>Rapport de Paiement</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         .main-content {
@@ -66,38 +66,38 @@ $unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['to
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="container mt-5">
-            <h1>Payment Report</h1>
+            <h1>Rapport de Paiement</h1>
 
             <!-- Filters -->
             <form method="GET" class="row g-3 mb-4">
                 <div class="col-md-3">
-                    <label for="start_date" class="form-label">Start Date</label>
+                    <label for="start_date" class="form-label">Date de Début</label>
                     <input type="date" id="start_date" name="start_date" class="form-control" value="<?= $startDate ?>">
                 </div>
                 <div class="col-md-3">
-                    <label for="end_date" class="form-label">End Date</label>
+                    <label for="end_date" class="form-label">Date de Fin</label>
                     <input type="date" id="end_date" name="end_date" class="form-control" value="<?= $endDate ?>">
                 </div>
                 <div class="col-md-3">
-                    <label for="status" class="form-label">Status</label>
+                    <label for="status" class="form-label">Statut</label>
                     <select id="status" name="status" class="form-select">
-                        <option value="">All</option>
-                        <option value="Paid" <?= $status == 'Paid' ? 'selected' : '' ?>>Paid</option>
-                        <option value="Pending" <?= $status == 'Pending' ? 'selected' : '' ?>>Pending</option>
-                        <option value="Unpaid" <?= $status == 'Unpaid' ? 'selected' : '' ?>>Unpaid</option>
+                        <option value="">Tous</option>
+                        <option value="Paid" <?= $status == 'Paid' ? 'selected' : '' ?>>Payé</option>
+                        <option value="Pending" <?= $status == 'Pending' ? 'selected' : '' ?>>En Attente</option>
+                        <option value="Unpaid" <?= $status == 'Unpaid' ? 'selected' : '' ?>>Non Payé</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="method" class="form-label">Payment Method</label>
+                    <label for="method" class="form-label">Méthode de Paiement</label>
                     <select id="method" name="method" class="form-select">
-                        <option value="">All</option>
-                        <option value="Credit Card" <?= $method == 'Credit Card' ? 'selected' : '' ?>>Credit Card</option>
+                        <option value="">Toutes</option>
+                        <option value="Credit Card" <?= $method == 'Credit Card' ? 'selected' : '' ?>>Carte de Crédit</option>
                         <option value="PayPal" <?= $method == 'PayPal' ? 'selected' : '' ?>>PayPal</option>
-                        <option value="Bank Transfer" <?= $method == 'Bank Transfer' ? 'selected' : '' ?>>Bank Transfer</option>
+                        <option value="Bank Transfer" <?= $method == 'Bank Transfer' ? 'selected' : '' ?>>Virement Bancaire</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-primary mt-4">Filter</button>
+                    <button type="submit" class="btn btn-primary mt-4">Filtrer</button>
                 </div>
             </form>
 
@@ -106,7 +106,7 @@ $unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['to
                 <div class="col-md-4">
                     <div class="card text-white bg-success">
                         <div class="card-body">
-                            <h5 class="card-title">Total Payments</h5>
+                            <h5 class="card-title">Paiements Totaux</h5>
                             <p class="card-text"><?= number_format($totalPayments, 2) ?> MAD</p>
                         </div>
                     </div>
@@ -114,7 +114,7 @@ $unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['to
                 <div class="col-md-4">
                     <div class="card text-white bg-warning">
                         <div class="card-body">
-                            <h5 class="card-title">Pending Payments</h5>
+                            <h5 class="card-title">Paiements en Attente</h5>
                             <p class="card-text"><?= number_format($pendingPayments, 2) ?> MAD</p>
                         </div>
                     </div>
@@ -122,7 +122,7 @@ $unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['to
                 <div class="col-md-4">
                     <div class="card text-white bg-danger">
                         <div class="card-body">
-                            <h5 class="card-title">Unpaid Students</h5>
+                            <h5 class="card-title">Étudiants Non Payés</h5>
                             <p class="card-text"><?= $unpaidStudents ?> students</p>
                         </div>
                     </div>
@@ -135,12 +135,12 @@ $unpaidStudents = $unpaidStudentsQuery ? $unpaidStudentsQuery->fetch_assoc()['to
                 <tr>
                     <th>ID</th>
                     <th>Date</th>
-                    <th>Customer</th>
-                    <th>Method</th>
-                    <th>Amount</th>
-                    <th>Trimester 1 Status</th>
-                    <th>Trimester 2 Status</th>
-                    <th>Trimester 3 Status</th>
+                    <th>Client</th>
+                    <th>Méthode</th>
+                    <th>Montant</th>
+                    <th>Statut Trimestre 1</th>
+                    <th>Statut Trimestre 2</th>
+                    <th>Statut Trimestre 3</th>
                 </tr>
                 </thead>
                 <tbody>

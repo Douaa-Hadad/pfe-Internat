@@ -10,7 +10,7 @@
             <a href="payment_status.php" class="sidebar-button"><i class="fa-solid fa-file-invoice-dollar"></i><span> Payment Status</span></a>
             <a href="room_requests.php" class="sidebar-button"><i class="fa-solid fa-file"></i><span> Demandes d'internat</span></a>
             <a href="dorm_requests.php" class="sidebar-button"><i class="fa-solid fa-file"></i><span> Demandes d'internat</span></a>
-            <a href="#" class="sidebar-button"><i class="fa-solid fa-exclamation-circle"></i><span> Réclamations</span></a>
+            <a href="reclamations.php" class="sidebar-button"><i class="fa-solid fa-exclamation-circle"></i><span> Réclamations</span></a>
          </div>
     </nav>
     <a href="../../login/logout.php" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i><span> Logout</span></a>

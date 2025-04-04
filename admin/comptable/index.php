@@ -91,21 +91,21 @@ while ($row = $monthly_payments_result->fetch_assoc()) {
     
     <div class="main-content">
         <!-- Overview Section -->
-        <h2>Dashboard Overview</h2>
+        <h2>Aperçu du Tableau de Bord</h2>
         <div class="overview">
-            <div>Total Payments: <?php echo $total_payments; ?></div>
-            <div>Total Amount: <?php echo number_format($total_amount, 2); ?> MAD</div>
+            <div>Total des Paiements : <?php echo $total_payments; ?></div>
+            <div>Montant Total : <?php echo number_format($total_amount, 2); ?> MAD</div>
         </div>
 
         <!-- Recent Activities Section -->
-        <h2>Recent Payments</h2>
+        <h2>Derniers Paiements</h2>
         <div class="recent-activities">
             <table>
                 <thead>
                     <tr>
-                        <th>Student CIN</th>
-                        <th>Amount</th>
-                        <th>Payment Date</th>
+                        <th>CIN Étudiant</th>
+                        <th>Montant</th>
+                        <th>Date de Paiement</th>
                     </tr>
                 </thead>
                 <tbody>
