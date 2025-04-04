@@ -1,13 +1,14 @@
 <?php
-// Start session if not started
+if (!isset($student_name)) {
+    $student_name = isset($_SESSION['student_name']) ? $_SESSION['student_name'] : 'Student';
+}
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Ensure dorm_status is set to avoid warnings
-$dorm_status = $_SESSION['dorm_status'] ?? '';
-
-// Or fetch from the database if stored there
+if (!isset($_SESSION['student_cin'])) {
+    header("Location: ../login/login.php"); // ✅ Fixed path to login
+    exit();
+}
 ?>
 <head>
     <meta charset="UTF-8">
@@ -15,7 +16,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            margin-top: 80px;
+            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
@@ -66,7 +67,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
            Sidebar Buttons
         ================================ */
         .sidebar-buttons {
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         .sidebar-button {
@@ -143,48 +144,6 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
         }
 
         /* ================================
-           Header Bar Styling
-        ================================ */
-        .header-bar {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            background-color: #fff;
-            padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
-        }
-
-        .header-bar .notification-bell {
-            position: relative;
-            margin-right: 20px;
-            cursor: pointer;
-        }
-
-        .header-bar .notification-bell .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background-color: red;
-            color: white;
-            font-size: 10px;
-            padding: 3px 6px;
-            border-radius: 50%;
-        }
-
-        .header-bar .profile-photo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        /* ================================
            Responsive Behavior
         ================================ */
         @media (max-width: 768px) {
@@ -243,51 +202,18 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
     </style>
 </head>
 
-<body>
-    <!-- Header Bar -->
-    <div class="header-bar">
-    <!-- Notification Bell -->
-<div class="notification-bell" id="bell" onclick="toggleNotifications()">
-    <i class="fa-solid fa-bell"></i>
-    <span class="badge" id="notifCount">0</span> 
-</div>
-
-<!-- Notification Window -->
-<div class="notification-dropdown" id="notifDropdown" style="display: none;">
-    <h4>Notifications</h4>
-    <div id="notifList">
-        <div class="no-notifications">No new notifications</div>
-    </div>
-</div>
-
-<script>
-    function toggleNotifications() {
-        const dropdown = document.getElementById('notifDropdown');
-        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-    }
-</script>
-        <a href="userprofile.php" class="profile-link">
-            <div class="profile">
-                <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
-                    ? '../uploads/' . htmlspecialchars($_SESSION['profile_picture']) 
-                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'; ?>" 
-                    alt="Profile Picture" class="profile-picture">
-            </div>
-        </a>
-    </div>
-
-    <div class="sidebar closed" id="sidebar">
-        <!-- Profile Section 
-        <a href="userprofile.php" class="profile-link">
-            <div class="profile">
-                <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
-                    ? '../uploads/' . htmlspecialchars($_SESSION['profile_picture']) 
-                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'; ?>" 
-                    alt="Profile Picture" class="profile-picture">
-                <div class="username"><?php echo htmlspecialchars($student_name); ?></div>
-            </div>
-        </a>
-        <hr>-->
+<div class="sidebar closed" id="sidebar">
+    <!-- Profile Section -->
+    <a href="userprofile.php" class="profile-link">
+        <div class="profile">
+            <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
+                ? '../uploads/' . htmlspecialchars($_SESSION['profile_picture']) 
+                : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'; ?>" 
+                alt="Profile Picture" class="profile-picture">
+            <div class="username"><?php echo htmlspecialchars($student_name); ?></div>
+        </div>
+    </a>
+    <hr>
 
     <!-- Navigation Section -->
     <nav id="nav-bar">
@@ -300,19 +226,18 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
         </div>
     </nav>
 
-        <!-- Logout Button -->
-        <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
-    </div>
+    <!-- Logout Button -->
+    <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
+</div>
 
-    <script src="js/sidebar.js"></script>
+<script src="js/sidebar.js"></script>
 
-    <!-- Sidebar Toggle Button -->
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+<!-- Sidebar Toggle Button -->
+<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
 
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('closed');
-        }
-    </script>
-</body>
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('closed');
+    }
+</script>
