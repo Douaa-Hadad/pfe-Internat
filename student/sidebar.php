@@ -73,7 +73,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
             display: flex;
             align-items: center;
             padding: 15px 20px;
-            margin: 10px 0;
+            margin: 10px 10px;
             color: white;
             cursor: pointer;
             font-size: 17px;
@@ -85,7 +85,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
         .sidebar-button i {
             font-size: 20px;
             margin-right: 15px;
-            margin-left: -11px;
+            margin-top: 9px;
         }
 
         .sidebar-button:hover,
@@ -136,6 +136,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
             cursor: pointer;
             z-index: 1001;
             margin-left: 15px;
+            margin-bottom: 5px;
         }
 
         .toggle-btn:hover {
@@ -150,7 +151,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
             justify-content: flex-end;
             align-items: center;
             background-color: #fff;
-            padding: 10px 20px;
+            padding: 5px 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             position: fixed;
             top: 0;
@@ -177,8 +178,8 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
         }
 
         .header-bar .profile-photo {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
             cursor: pointer;
@@ -296,7 +297,7 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
             <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
             <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
             <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
-            <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
+            <a href="complains.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
         </div>
     </nav>
 
