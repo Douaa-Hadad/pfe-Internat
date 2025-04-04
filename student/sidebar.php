@@ -247,18 +247,25 @@ $dorm_status = $_SESSION['dorm_status'] ?? '';
     <!-- Header Bar -->
     <div class="header-bar">
     <!-- Notification Bell -->
-<div class="notification-bell" id="bell">
+<div class="notification-bell" id="bell" onclick="toggleNotifications()">
     <i class="fa-solid fa-bell"></i>
     <span class="badge" id="notifCount">0</span> 
 </div>
 
 <!-- Notification Window -->
-<div class="notification-dropdown" id="notifDropdown">
+<div class="notification-dropdown" id="notifDropdown" style="display: none;">
     <h4>Notifications</h4>
     <div id="notifList">
         <div class="no-notifications">No new notifications</div>
     </div>
 </div>
+
+<script>
+    function toggleNotifications() {
+        const dropdown = document.getElementById('notifDropdown');
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
         <a href="userprofile.php" class="profile-link">
             <div class="profile">
                 <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
