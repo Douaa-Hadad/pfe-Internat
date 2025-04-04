@@ -2,7 +2,7 @@
 session_start();
 include '../../connection.php';
 
-// Redirect to login page if no session exists or user is not admin
+// Rediriger vers la page de connexion si aucune session n'existe ou si l'utilisateur n'est pas un gestionnaire de dortoir
 if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
     header("Location: ../../login/login.php");
     exit();
@@ -10,16 +10,16 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager')
 
 $conn = new mysqli("localhost", "root", "", "estcasa");
 
-// Check connection
+// Vérifier la connexion
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Échec de la connexion : " . $conn->connect_error);
 }
 
-// Fetch students with payment status
+// Récupérer les étudiants avec leur statut de paiement
 $sql = "
     SELECT 
         s.cin, s.name, s.email, s.phone, 
-        IFNULL(p.frais_d_inscription, 'unpaid') AS payment_status, 
+        IFNULL(p.frais_d_inscription, 'non payé') AS payment_status, 
         IFNULL(p.amount, 0) AS amount, 
         p.date AS payment_date
     FROM students s
@@ -29,12 +29,12 @@ $sql = "
 $result = $conn->query($sql);
 
 if (!$result) {
-    die("Error executing query: " . $conn->error);
+    die("Erreur lors de l'exécution de la requête : " . $conn->error);
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,19 +44,19 @@ if (!$result) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .main-content {
-            margin-left: 0; /* Remove sidebar margin if needed */
+            margin-left: 0; /* Supprimer la marge de la barre latérale si nécessaire */
             padding: 20px;
-            width: 100%; /* Make it occupy full width */
+            width: 100%; /* Occuper toute la largeur */
         }
 
         .search-bar {
-            margin: 20px auto; /* Adjusted margin for consistency */
+            margin: 20px auto; /* Ajuster la marge pour plus de cohérence */
             text-align: center;
         }
 
         .payments-table {
-            width: 95%; /* Increase table width */
-            max-width: 1100px; /* Adjust max-width */
+            width: 95%; /* Augmenter la largeur de la table */
+            max-width: 1100px; /* Ajuster la largeur maximale */
             margin: 20px auto;
             background: white;
             padding: 20px;
@@ -113,21 +113,21 @@ if (!$result) {
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="payments-table">
-            <h2>Payment Status</h2>
+            <h2>Statut des paiements</h2>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search students by name or CIN...">
+                <input type="text" id="searchInput" placeholder="Rechercher des étudiants par nom ou CIN...">
                 <button type="button" id="searchButton"><i class="fa fa-search"></i></button>
             </div>
             <table>
                 <thead>
                     <tr>
                         <th>CIN</th>
-                        <th>Name</th>
+                        <th>Nom</th>
                         <th>Email</th>
-                        <th>Phone</th>
-                        <th>Payment Status</th>
-                        <th>Amount</th>
-                        <th>Payment Date</th>
+                        <th>Téléphone</th>
+                        <th>Statut de paiement</th>
+                        <th>Montant</th>
+                        <th>Date de paiement</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -147,7 +147,7 @@ if (!$result) {
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7">No data available</td>
+                            <td colspan="7">Aucune donnée disponible</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

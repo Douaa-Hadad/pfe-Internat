@@ -144,6 +144,7 @@ $room = $roomResult->fetch_assoc();
             <a href="reserve_room.php" class="btn">Choisir une chambre</a>
         <?php endif; ?>
 
+
     </div>
 </body>
 </html>

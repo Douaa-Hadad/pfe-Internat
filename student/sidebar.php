@@ -222,7 +222,7 @@ if (!isset($_SESSION['student_cin'])) {
             <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
             <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
             <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
-            <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
+            <a href="complains.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
         </div>
     </nav>
 

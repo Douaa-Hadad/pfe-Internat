@@ -2,13 +2,13 @@
 session_start();
 include '../../connection.php';
 
-// Redirect to login page if no session exists or user is not admin
+// Rediriger vers la page de connexion si aucune session n'existe ou si l'utilisateur n'est pas un gestionnaire de dortoir
 if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'dorm_manager') {
     header("Location: ../../login/login.php");
     exit();
 }
 
-// Fetch all room requests
+// Récupérer toutes les demandes de chambre
 $requestsQuery = $conn->prepare("
     SELECT rr.id, rr.student_cin, s.name AS student_name, s.gender, rr.room_id, rr.status, rr.request_date
     FROM room_requests rr
@@ -23,11 +23,11 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Requests</title>
+    <title>Demandes de chambres</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
         .btn-accept {
@@ -90,6 +90,20 @@ $conn->close();
             text-decoration: none;
             cursor: pointer;
         }
+
+        .btn-assign-room {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn-assign-room:hover {
+            background-color: #45a049; /* Darker green */
+        }
     </style>
 </head>
 <body>
@@ -97,16 +111,16 @@ $conn->close();
     <?php include 'sidebar.php'; ?>
     <div class="main-content">
         <div class="table-container">
-            <h2>Room Requests</h2>
+            <h2>Demandes de chambres</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Request ID</th>
-                        <th>Student CIN</th>
-                        <th>Student Name</th>
-                        <th>Gender</th>
-                        <th>Status</th>
-                        <th>Request Date</th>
+                        <th>ID de la demande</th>
+                        <th>CIN de l'étudiant</th>
+                        <th>Nom de l'étudiant</th>
+                        <th>Genre</th>
+                        <th>Statut</th>
+                        <th>Date de la demande</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -122,8 +136,8 @@ $conn->close();
                             </td>
                             <td><?= htmlspecialchars($request['request_date']); ?></td>
                             <td>
-                                <button type="button" class="btn-accept" onclick="openRoomModal('<?= htmlspecialchars($request['student_cin']); ?>', '<?= htmlspecialchars($request['id']); ?>')">
-                                    Assign Room
+                                <button type="button" class="btn-assign-room" onclick="openRoomModal('<?= htmlspecialchars($request['student_cin']); ?>', '<?= htmlspecialchars($request['id']); ?>')">
+                                    Assigner une chambre
                                 </button>
                             </td>
                         </tr>
@@ -133,26 +147,26 @@ $conn->close();
         </div>
     </div>
 
-    <!-- Modal for assigning rooms -->
+    <!-- Modal pour assigner des chambres -->
     <div id="roomModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeRoomModal()">&times;</span>
-            <h2>Assign Room</h2>
+            <h2>Assigner une chambre</h2>
             <input type="hidden" id="modalStudentCin" name="student_cin">
             <input type="hidden" id="modalRequestId" name="request_id">
             <table>
                 <thead>
                     <tr>
-                        <th>Room ID</th>
-                        <th>Room Number</th>
-                        <th>Dorm ID</th>
-                        <th>Capacity</th>
-                        <th>Occupied Slots</th>
+                        <th>ID de la chambre</th>
+                        <th>Numéro de chambre</th>
+                        <th>ID du dortoir</th>
+                        <th>Capacité</th>
+                        <th>Places occupées</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="roomTableBody">
-                    <!-- Room rows will be dynamically populated -->
+                    <!-- Les lignes des chambres seront ajoutées dynamiquement -->
                 </tbody>
             </table>
         </div>
@@ -163,12 +177,12 @@ $conn->close();
             document.getElementById('modalStudentCin').value = studentCin;
             document.getElementById('modalRequestId').value = requestId;
 
-            // Fetch available rooms dynamically
+            // Récupérer les chambres disponibles dynamiquement
             fetch(`fetch_rooms.php?student_cin=${encodeURIComponent(studentCin)}`)
                 .then(response => response.json())
                 .then(data => {
                     const roomTableBody = document.getElementById('roomTableBody');
-                    roomTableBody.innerHTML = ''; // Clear existing rows
+                    roomTableBody.innerHTML = ''; // Effacer les lignes existantes
 
                     data.forEach(room => {
                         const row = document.createElement('tr');
@@ -178,14 +192,14 @@ $conn->close();
                             <td>${room.dorm_id}</td>
                             <td>${room.capacity}</td>
                             <td>${room.occupied_slots}</td>
-                            <td><button onclick="assignRoom('${room.room_number}', ${room.dorm_id})">Assign</button></td>
+                            <td><button onclick="assignRoom('${room.room_number}', ${room.dorm_id})">Assigner</button></td>
                         `;
                         roomTableBody.appendChild(row);
                     });
                 })
                 .catch(error => {
-                    console.error('Error fetching rooms:', error);
-                    alert('Failed to fetch available rooms.');
+                    console.error('Erreur lors de la récupération des chambres :', error);
+                    alert('Échec de la récupération des chambres disponibles.');
                 });
 
             document.getElementById('roomModal').style.display = 'block';
@@ -199,7 +213,7 @@ $conn->close();
             const studentCin = document.getElementById('modalStudentCin').value;
             const requestId = document.getElementById('modalRequestId').value;
 
-            const composedKey = `${roomNumber}-${dormId}`; // Create the composed key
+            const composedKey = `${roomNumber}-${dormId}`; // Créer la clé composée
 
             fetch('assign_room.php', {
                 method: 'POST',
@@ -209,18 +223,18 @@ $conn->close();
             .then(response => response.json())
             .then(data => {
                 if (data.message) {
-                    alert(data.message); // Show success message
+                    alert(data.message); // Afficher le message de succès
                 } else if (data.error) {
-                    alert("Error: " + data.error); // Show detailed error message
+                    alert("Erreur : " + data.error); // Afficher le message d'erreur détaillé
                 } else {
-                    alert("An unknown error occurred.");
+                    alert("Une erreur inconnue s'est produite.");
                 }
                 closeRoomModal();
-                location.reload(); // Reload the page to reflect changes
+                location.reload(); // Recharger la page pour refléter les changements
             })
             .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while assigning the room.");
+                console.error("Erreur :", error);
+                alert("Une erreur s'est produite lors de l'assignation de la chambre.");
             });
         }
     </script>

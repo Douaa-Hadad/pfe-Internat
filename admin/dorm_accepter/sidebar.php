@@ -8,7 +8,7 @@
             <a href="roomslist.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span> Gestion des chambres</span></a>
             <a href="room_requests.php" class="sidebar-button"><i class="fa-solid fa-file"></i><span> Demandes d'internat</span></a>
             <a href="dorm_requests.php" class="sidebar-button"><i class="fa-solid fa-file"></i><span> Demandes d'internat</span></a>
-         </div>
+            </div>
     </nav>
     <a href="../../login/logout.php" class="logout-button"><i class="fa-solid fa-sign-out-alt"></i><span> Logout</span></a>
 </div>

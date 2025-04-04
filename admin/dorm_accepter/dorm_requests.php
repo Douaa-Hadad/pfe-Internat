@@ -2,7 +2,7 @@
 session_start();
 include '../../connection.php';
 
-// Redirect to login page if no session exists or user is not admin
+// Rediriger vers la page de connexion si aucune session n'existe ou si l'utilisateur n'est pas administrateur
 if (!isset($_SESSION['user_type']) || $_SESSION['user_role'] !== 'request') {
     header("Location: ../../login/login.php");
     exit();
@@ -30,7 +30,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demandes de Dortoir</title>
+    <title>Demandes d'internat</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
         .btn-accept {
@@ -139,7 +139,7 @@ $conn->close();
     </div>
     <div class="main-content">
         <div class="table-container">
-            <h2>Demandes de Dortoir</h2>
+            <h2>Demandes d'internat</h2>
             <table>
                 <thead>
                     <tr>
@@ -148,7 +148,7 @@ $conn->close();
                         <th>Email</th>
                         <th>Ville</th>
                         <th>Statut</th>
-                        <th>Date de Demande</th>
+                        <th>Date de demande</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
