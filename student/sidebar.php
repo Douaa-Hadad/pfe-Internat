@@ -74,7 +74,7 @@ if (!isset($_SESSION['student_cin'])) {
             display: flex;
             align-items: center;
             padding: 15px 20px;
-            margin: 10px 0;
+            margin: 10px 10px;
             color: white;
             cursor: pointer;
             font-size: 17px;
@@ -86,7 +86,7 @@ if (!isset($_SESSION['student_cin'])) {
         .sidebar-button i {
             font-size: 20px;
             margin-right: 15px;
-            margin-left: -11px;
+            margin-top: 9px;
         }
 
         .sidebar-button:hover,
@@ -137,6 +137,7 @@ if (!isset($_SESSION['student_cin'])) {
             cursor: pointer;
             z-index: 1001;
             margin-left: 15px;
+            margin-bottom: 5px;
         }
 
         .toggle-btn:hover {
@@ -144,8 +145,50 @@ if (!isset($_SESSION['student_cin'])) {
         }
 
         /* ================================
-           Responsive Behavior
+           Header Bar Styling
         ================================ */
+        .header-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background-color: #fff;
+            padding: 5px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        .header-bar .notification-bell {
+            position: relative;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .header-bar .notification-bell .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+
+        .header-bar .profile-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* ================================
+>>>>>>> 921f3a6ffbbe4b1e5517401fdb074f65c08b4b2b
+           Responsive Behavior
         @media (max-width: 768px) {
             .sidebar {
                 width: 60px;
@@ -222,7 +265,7 @@ if (!isset($_SESSION['student_cin'])) {
             <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
             <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
             <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
-            <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
+            <a href="complains.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
         </div>
     </nav>
 
