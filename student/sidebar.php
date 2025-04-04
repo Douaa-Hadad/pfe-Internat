@@ -1,14 +1,13 @@
 <?php
-if (!isset($student_name)) {
-    $student_name = isset($_SESSION['student_name']) ? $_SESSION['student_name'] : 'Student';
-}
+// Start session if not started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (!isset($_SESSION['student_cin'])) {
-    header("Location: ../auth/login.php"); // ✅ Fixed path to login
-    exit();
-}
+
+// Ensure dorm_status is set to avoid warnings
+$dorm_status = $_SESSION['dorm_status'] ?? '';
+
+// Or fetch from the database if stored there
 ?>
 <head>
     <meta charset="UTF-8">
@@ -16,7 +15,7 @@ if (!isset($_SESSION['student_cin'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            margin: 0;
+            margin-top: 80px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
@@ -67,7 +66,7 @@ if (!isset($_SESSION['student_cin'])) {
            Sidebar Buttons
         ================================ */
         .sidebar-buttons {
-            margin-top: 20px;
+            margin-top: 25px;
         }
 
         .sidebar-button {
@@ -144,6 +143,48 @@ if (!isset($_SESSION['student_cin'])) {
         }
 
         /* ================================
+           Header Bar Styling
+        ================================ */
+        .header-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        .header-bar .notification-bell {
+            position: relative;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .header-bar .notification-bell .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+
+        .header-bar .profile-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* ================================
            Responsive Behavior
         ================================ */
         @media (max-width: 768px) {
@@ -202,42 +243,71 @@ if (!isset($_SESSION['student_cin'])) {
     </style>
 </head>
 
-<div class="sidebar closed" id="sidebar">
-    <!-- Profile Section -->
-    <a href="userprofile.php" class="profile-link">
-        <div class="profile">
-            <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
-                ? '../uploads/' . htmlspecialchars($_SESSION['profile_picture']) 
-                : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'; ?>" 
-                alt="Profile Picture" class="profile-picture">
-            <div class="username"><?php echo htmlspecialchars($student_name); ?></div>
-        </div>
-    </a>
-    <hr>
-
-    <!-- Navigation Section -->
-    <nav id="nav-bar">
-        <div class="sidebar-buttons">
-            <a href="dashboard.php" class="sidebar-button"><i class="fa-solid fa-home"></i><span> Home</span></a>
-            <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
-            <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
-            <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
-            <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
-        </div>
-    </nav>
-
-    <!-- Logout Button -->
-    <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
+<body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+    <!-- Notification Bell -->
+<div class="notification-bell" id="bell">
+    <i class="fa-solid fa-bell"></i>
+    <span class="badge" id="notifCount">0</span> 
 </div>
 
-<script src="js/sidebar.js"></script>
+<!-- Notification Window -->
+<div class="notification-dropdown" id="notifDropdown">
+    <h4>Notifications</h4>
+    <div id="notifList">
+        <div class="no-notifications">No new notifications</div>
+    </div>
+</div>
+        <a href="userprofile.php" class="profile-link">
+            <div class="profile">
+                <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
+                    ? '../uploads/' . htmlspecialchars($_SESSION['profile_picture']) 
+                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'; ?>" 
+                    alt="Profile Picture" class="profile-picture">
+            </div>
+        </a>
+    </div>
 
-<!-- Sidebar Toggle Button -->
-<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <div class="sidebar closed" id="sidebar">
+        <!-- Profile Section 
+        <a href="userprofile.php" class="profile-link">
+            <div class="profile">
+                <img src="<?php echo isset($_SESSION['profile_picture']) && !empty($_SESSION['profile_picture']) 
+                    ? '../uploads/' . htmlspecialchars($_SESSION['profile_picture']) 
+                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'; ?>" 
+                    alt="Profile Picture" class="profile-picture">
+                <div class="username"><?php echo htmlspecialchars($student_name); ?></div>
+            </div>
+        </a>
+        <hr>-->
 
-<script>
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('closed');
-    }
-</script>
+        <!-- Navigation Section -->
+        <nav id="nav-bar">
+            <div class="sidebar-buttons">
+                <a href="dashboard.php" class="sidebar-button"><i class="fa-solid fa-home"></i><span> Home</span></a>
+                <?php if ($dorm_status !== 'Approved') { ?>
+                    <a href="apply_dorm.php" class="sidebar-button"><i class="fa-solid fa-building"></i><span>demande d'internat</span></a>
+                <?php } ?>
+                <a href="reserve_room.php" class="sidebar-button"><i class="fa-solid fa-door-open"></i><span>choix de chambre</span></a>
+                <a href="etudiant_repas.php" class="sidebar-button"><i class="fa-solid fa-utensils"></i><span>service de restauration</span></a>
+                <a href="complaints.php" class="sidebar-button"><i class="fa-solid fa-face-angry"></i><span> Réclamations</span></a>
+            </div>
+        </nav>
+
+        <!-- Logout Button -->
+        <a href="../login/logout.php" class="logout-button"><i class="fa-solid fa-right-from-bracket"></i><span> Logout</span></a>
+    </div>
+
+    <script src="js/sidebar.js"></script>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('closed');
+        }
+    </script>
+</body>
