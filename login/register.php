@@ -104,10 +104,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-container">
         <div class="logo">
-            <img src="../logo.png" alt="logo">
+            <img src="logo.png" alt="logo">
         </div>
-
-        <h2>Register</h2>
 
         <?php if(!empty($error)): ?>
             <p style="color:red;"><?php echo $error; ?></p>
