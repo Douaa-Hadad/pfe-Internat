@@ -167,6 +167,7 @@ if (!$payments_result) {
                 <input type="text" id="searchInput" placeholder="Rechercher des paiements par CIN ou nom de l'étudiant...">
                 <button type="button" id="searchButton"><i class="fa fa-search"></i></button>
             </div>
+
             <table>
                 <thead>
                     <tr>
@@ -290,6 +291,21 @@ if (!$payments_result) {
             // Remove the query parameter from the URL
             window.history.replaceState({}, document.title, window.location.pathname);
         }
+        document.getElementById('searchInput').addEventListener('input', function () {
+        const searchValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#tableBody tr');
+
+        rows.forEach(row => {
+            const cin = row.cells[0]?.textContent.toLowerCase();
+            const name = row.cells[1]?.textContent.toLowerCase();
+
+            if (cin.includes(searchValue) || name.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
     </script>
 </body>
 </html>
